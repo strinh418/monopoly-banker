@@ -23,4 +23,24 @@ public abstract class Property {
 
     /** Cost of rent for landing on this property. */
     private double rent;
+
+    /** Returns whether this property is owned. */
+    public boolean isOwned() {
+        return owned;
+    }
+
+    /** Returns the cost of this property. */
+    public double getCost() {
+        return cost;
+    }
+
+    /** Returns the owner of this property. */
+    public Player getOwner() {
+        return owner;
+    }
+
+    /** Sets the owner to player. */
+    public void setOwner(Player player) {
+        owner = player;
+    }
 }
