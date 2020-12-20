@@ -45,33 +45,47 @@ public class Player {
     }
 
     /**
-     *  Adds PROPERTY to this player's properties list and changes property's ownership.
+     *  Adds PROPERTY to this player's properties list.
      *  Throws an OwnershipException if the property is owned by another player.
      */
-    private void addProperty(Property property) {
+    public void addPropertyList(Property property) {
         if (property.isOwned()) {
             if (!property.getOwner().equals(this)) {
                 throw new OwnershipException();
             }
         } else {
-            property.setOwner(this);
             properties.add(property);
-            // TODO: Need to update rent of this property and those in its color set.
         }
     }
+    /**
+     *  Removes PROPERTY from this player's properties list.
+     *  Throws an OwnershipException if the property is not owned by this player.
+     */
+    public void removePropertyList(Property property) {
+        if (property.isOwned()) {
+            if (!property.getOwner().equals(this)) {
+                throw new OwnershipException();
+            }
+            properties.remove(property);
+        } else {
+            throw new OwnershipException("The player does not own this property");
+        }
+    }
+
     /** Buys property if possible. Throws a MonopolyException if unable to do so. */
     public void buyProperty(Property property) {
         if (property.isOwned())
         {
             throw new OwnershipException();
-        }
-        else if (property.getCost() > money)
-        {
-            throw new InsufficientFundsException();
-        }
-        else
-        {
-            // TODO: Finish this method.
+        } else {
+            updateMoney(-1 * property.getCost());
+            property.changeOwnership(this);
         }
     }
+
+    /** Returns the player's current turn. */
+    public int getTurn() {
+        return turn;
+    }
+
 }

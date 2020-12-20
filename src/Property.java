@@ -1,28 +1,100 @@
+import java.util.Map;
+import java.util.Set;
+
 public abstract class Property {
 
+    /** Enum representing different types of properties. */
+    public enum typeEnum {
+        RED,
+        GREEN,
+        YELLOW,
+        ORANGE,
+        PURPLE,
+        LIGHTBLUE,
+        DARKBLUE,
+        BROWN,
+        RAILROAD,
+        UTILITY
+    }
+
+    /** Type or color of this property. */
+    protected typeEnum type;
+
+    /** Sets of the same type or color property. */
+    protected static Map<typeEnum, Set<Property>> TYPESETS;
+
     /** The owner of this property. Null if not currently owned. */
-    private Player owner;
+    protected Player owner;
 
     /** Determines if the property is currently owned. */
-    private boolean owned;
+    protected boolean owned;
 
     /** Determines if the property is currently mortgaged. */
-    private boolean mortgaged;
+    protected boolean mortgaged;
 
     /** The turn that this property was mortgaged. */
-    private int turnMortgaged;
+    protected int turnMortgaged;
 
     /** The amount gained from mortgaging the property. */
-    private double mortgageValue;
+    protected double mortgageValue;
 
     /** The name of this property. */
-    private String name;
+    protected String name;
 
     /** The initial cost to buy this property. */
-    private double cost;
+    protected double cost;
 
     /** Cost of rent for landing on this property. */
-    private double rent;
+    protected double rent;
+
+    /** Update the current rent information for this property. */
+    public abstract void updateRent();
+
+    /** Change the ownership of the property to NEWOWNER, removing any current owner. */
+    public void changeOwnership(Player newOwner) {
+        if (owned) {
+            owner.removePropertyList(this);
+        }
+        if (newOwner == null) {
+            owned = false;
+        } else {
+            newOwner.addPropertyList(this);
+            owned = true;
+        }
+        owner = newOwner;
+        updateRent();
+    }
+
+    /** Returns the number of properties in this set that the owner of this property has. */
+    private int totalOwnedSet() {
+        int total = 0;
+        for (Property p : TYPESETS.get(type)) {
+            if (p.owner.equals(owner)) {
+                total += 1;
+            }
+        }
+        return total;
+    }
+
+    /** Returns whether or not the owner of this property also owns all the other properties of its set. */
+    private boolean checkOwnFullSet() {
+        if (totalOwnedSet() == TYPESETS.get(type).size()) {
+            return true;
+        }
+        return false;
+    }
+
+    /** Changes the mortgage status based on WANTMORTGAGED. Returns true if a change was made. */
+    public boolean changeMortgageStatus(boolean wantMortgaged) {
+        if (wantMortgaged && !mortgaged) {
+            mortgaged = true;
+            return true;
+        } else if (!wantMortgaged && mortgaged) {
+            mortgaged = false;
+            return true;
+        }
+        return false;
+    }
 
     /** Returns whether this property is owned. */
     public boolean isOwned() {
@@ -37,10 +109,5 @@ public abstract class Property {
     /** Returns the owner of this property. */
     public Player getOwner() {
         return owner;
-    }
-
-    /** Sets the owner to player. */
-    public void setOwner(Player player) {
-        owner = player;
     }
 }
