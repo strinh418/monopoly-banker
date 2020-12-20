@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +23,20 @@ public abstract class Property {
     protected typeEnum type;
 
     /** Sets of the same type or color property. */
-    protected static Map<typeEnum, Set<Property>> TYPESETS;
+    protected static final Map<typeEnum, Set<Property>> TYPESETS = new HashMap<>() {
+        {
+            put(typeEnum.RED, new HashSet<>());
+            put(typeEnum.GREEN, new HashSet<>());
+            put(typeEnum.YELLOW, new HashSet<>());
+            put(typeEnum.ORANGE, new HashSet<>());
+            put(typeEnum.PURPLE, new HashSet<>());
+            put(typeEnum.LIGHTBLUE, new HashSet<>());
+            put(typeEnum.DARKBLUE, new HashSet<>());
+            put(typeEnum.BROWN, new HashSet<>());
+            put(typeEnum.RAILROAD, new HashSet<>());
+            put(typeEnum.UTILITY, new HashSet<>());
+        }
+    };
 
     /** The owner of this property. Null if not currently owned. */
     protected Player owner;
@@ -44,7 +59,10 @@ public abstract class Property {
     /** The initial cost to buy this property. */
     protected double cost;
 
-    /** Cost of rent for landing on this property. */
+    /** Original rent for landing on this property. */
+    protected double defaultRent;
+
+    /** Current rent for landing on this property. */
     protected double rent;
 
     /** Update the current rent information for this property. */
@@ -77,7 +95,7 @@ public abstract class Property {
     }
 
     /** Returns whether or not the owner of this property also owns all the other properties of its set. */
-    private boolean checkOwnFullSet() {
+    protected boolean checkOwnFullSet() {
         if (totalOwnedSet() == TYPESETS.get(type).size()) {
             return true;
         }
