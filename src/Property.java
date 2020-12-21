@@ -59,14 +59,36 @@ public abstract class Property {
     /** The initial cost to buy this property. */
     protected double cost;
 
-    /** Original rent for landing on this property. */
-    protected double defaultRent;
+    /** Array of rents possible for the. */
+    protected double[] rentList;
 
     /** Current rent for landing on this property. */
     protected double rent;
 
-    /** Update the current rent information for this property. */
-    public abstract void updateRent();
+    /** Returns the number of properties in this set that the owner of this property has. */
+    private int totalOwnedSet() {
+        if (owner == null) {
+            return 0;
+        }
+        int total = 0;
+        for (Property p : TYPESETS.get(type)) {
+            if (owner.equals(p.owner)) {
+                total += 1;
+            }
+        }
+        return total;
+    }
+
+    /** Returns whether or not the owner of this property also owns all the other properties of its set. */
+    private boolean checkOwnFullSet() {
+        if (totalOwnedSet() == TYPESETS.get(type).size()) {
+            return true;
+        }
+        return false;
+    }
+
+    /** Update the current rent information for this property if necessary after ownership changes. */
+    public abstract void updateOwnerRent();
 
     /** Change the ownership of the property to NEWOWNER, removing any current owner. */
     public void changeOwnership(Player newOwner) {
@@ -80,26 +102,7 @@ public abstract class Property {
             owned = true;
         }
         owner = newOwner;
-        updateRent();
-    }
-
-    /** Returns the number of properties in this set that the owner of this property has. */
-    private int totalOwnedSet() {
-        int total = 0;
-        for (Property p : TYPESETS.get(type)) {
-            if (p.owner.equals(owner)) {
-                total += 1;
-            }
-        }
-        return total;
-    }
-
-    /** Returns whether or not the owner of this property also owns all the other properties of its set. */
-    protected boolean checkOwnFullSet() {
-        if (totalOwnedSet() == TYPESETS.get(type).size()) {
-            return true;
-        }
-        return false;
+        updateOwnerRent();
     }
 
     /** Changes the mortgage status based on WANTMORTGAGED. Returns true if a change was made. */
@@ -127,5 +130,15 @@ public abstract class Property {
     /** Returns the owner of this property. */
     public Player getOwner() {
         return owner;
+    }
+
+    /** Sets the owner. Using mostly for testing purposes. */
+    public void setOwner(Player player) {
+        owner = player;
+        if (player == null) {
+            owned = false;
+        } else {
+            owned = true;
+        }
     }
 }
