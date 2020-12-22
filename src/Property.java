@@ -68,6 +68,10 @@ public abstract class Property {
     /** Determines if this property's owner has a full set. */
     protected boolean inFullSet;
 
+    // TODO: Should I move this into ColorProperty class?
+    /** The number of buildings existing on this property. */
+    protected int numBuildings;
+
     /** Returns the number of properties in this set that the owner of this property has. */
     private int totalOwnedSet() {
         if (owner == null) {
@@ -114,6 +118,10 @@ public abstract class Property {
         }
     }
 
+    // TODO: For updateBuildings and changeMortgageStatus, should I split each method into two?
+    /** Changes buildings status on property, if allowed, based on ADD. */
+    public abstract void updateBuildings(boolean add);
+
     /** Changes the mortgage status based on WANTMORTGAGED. Returns true if a change was made. */
     public boolean changeMortgageStatus(boolean wantMortgaged) {
         if (wantMortgaged && !mortgaged) {
@@ -144,6 +152,11 @@ public abstract class Property {
     /** Returns the current rent of this property. */
     public double getRent() {
         return rent;
+    }
+
+    /** Returns the number of buildings on this proeprty. */
+    public int getNumBuildings() {
+        return numBuildings;
     }
 
     /** Sets the owner. Using mostly for testing purposes. */

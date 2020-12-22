@@ -285,4 +285,93 @@ public class ColorPropertyTests {
         assertEquals(.14, ORANGE2.getRent(), 0);
         assertEquals(.16, ORANGE3.getRent(), 0);
     }
+
+    @Test
+    public void testUpdateBuildings() {
+        String errMsg = "";
+        // Case 1: Full set not owned, should not be able to add or subtract buildings.
+        try {
+            RED1.updateBuildings(true);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Owner does not have the full set.", errMsg);
+        errMsg = "";
+        try {
+            RED1.updateBuildings(false);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Owner does not have the full set.", errMsg);
+        errMsg = "";
+
+        // Case 2: Full set owned. Not able to subtract building when 0 on the site.
+        GREEN1.correctSetStatus();
+        try {
+            GREEN1.updateBuildings(false);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Number of buildings must be between 0 and 5.", errMsg);
+        errMsg = "";
+        GREEN1.updateBuildings(true);
+        assertEquals(1, GREEN1.getNumBuildings());
+        assertEquals(1.3, GREEN1.getRent(), 0);
+        GREEN1.updateBuildings(true);
+        assertEquals(2, GREEN1.getNumBuildings());
+        assertEquals(3.9, GREEN1.getRent(), 0);
+        GREEN1.updateBuildings(true);
+        assertEquals(3, GREEN1.getNumBuildings());
+        assertEquals(9, GREEN1.getRent(), 0);
+        GREEN1.updateBuildings(true);
+        assertEquals(4, GREEN1.getNumBuildings());
+        assertEquals(11, GREEN1.getRent(), 0);
+        GREEN1.updateBuildings(false);
+        assertEquals(3, GREEN1.getNumBuildings());
+        assertEquals(9, GREEN1.getRent(), 0);
+        GREEN1.updateBuildings(true);
+        assertEquals(4, GREEN1.getNumBuildings());
+        assertEquals(11, GREEN1.getRent(), 0);
+        GREEN1.updateBuildings(true);
+        assertEquals(5, GREEN1.getNumBuildings());
+        assertEquals(12.75, GREEN1.getRent(), 0);
+
+        // Case 3: Full set owned. Not able to add building when 5 on the site.
+        try {
+            GREEN1.updateBuildings(true);
+        } catch(MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Number of buildings must be between 0 and 5.", errMsg);
+        errMsg = "";
+
+        // Case 4: Full set owned. Able to add/subtract building (but not when distribution is uneven)
+        BROWN1.correctSetStatus();
+        BROWN1.updateBuildings(true);
+        assertEquals(1, BROWN1.getNumBuildings());
+        assertEquals(.1, BROWN1.getRent(), 0);
+        try {
+            BROWN1.updateBuildings(true);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Houses must be evenly distributed amongst properties.", errMsg);
+        errMsg = "";
+        BROWN1.updateBuildings(false);
+        assertEquals(0, BROWN1.getNumBuildings());
+        assertEquals(.02, BROWN1.getRent(), 0);
+        BROWN1.updateBuildings(true);
+        BROWN2.updateBuildings(true);
+        BROWN2.updateBuildings(true);
+        assertEquals(1, BROWN1.getNumBuildings());
+        assertEquals(.1, BROWN1.getRent(), 0);
+        assertEquals(2, BROWN2.getNumBuildings());
+        assertEquals(.6, BROWN2.getRent(), 0);
+        try {
+            BROWN1.updateBuildings(false);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Houses must be evenly distributed amongst properties.", errMsg);
+    }
 }

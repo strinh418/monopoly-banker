@@ -12,4 +12,9 @@ public class Utility extends Property {
     public void updateOwnerRent(boolean checked) {
 
     }
+
+    @Override
+    public void updateBuildings(boolean add) {
+
+    }
 }

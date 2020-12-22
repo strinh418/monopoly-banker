@@ -8,4 +8,9 @@ public class Railroad extends Property {
     public void updateOwnerRent(boolean checked) {
 
     }
+
+    @Override
+    public void updateBuildings(boolean add) {
+
+    }
 }
