@@ -1,5 +1,3 @@
-import java.util.Set;
-
 public class ColorProperty extends Property {
 
     /** Cost of buying a building on this property. */
@@ -7,8 +5,7 @@ public class ColorProperty extends Property {
 
     /** Create an instance of a ColorProperty. */
     public ColorProperty(String name, typeEnum color, double cost, double mortgageVal,
-                         double buildingCost, double[] rentList)
-    {
+                         double buildingCost, double[] rentList) {
         this.name = name;
         this.type = color;
         this.cost = cost;

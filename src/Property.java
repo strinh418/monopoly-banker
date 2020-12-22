@@ -139,6 +139,11 @@ public abstract class Property {
         return owned;
     }
 
+    /** Returns whether this property is mortgaged. */
+    public boolean isMortgaged() {
+        return mortgaged;
+    }
+
     /** Returns the cost of this property. */
     public double getCost() {
         return cost;

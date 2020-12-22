@@ -374,4 +374,55 @@ public class ColorPropertyTests {
         }
         assertEquals("Houses must be evenly distributed amongst properties.", errMsg);
     }
+
+    @Test
+    public void testChangeMortgageStatus() {
+        // Case 1: Mortgage a property that isn't in a full set.
+        YELLOW1.changeMortgageStatus(true);
+        YELLOW2.changeMortgageStatus(false);
+        YELLOW3.changeMortgageStatus(true);
+        assertTrue(YELLOW1.isMortgaged());
+        assertFalse(YELLOW2.isMortgaged());
+        assertTrue(YELLOW3.isMortgaged());
+
+        // Case 2: Unmortgage a property that isn't in a full set.
+        YELLOW1.changeMortgageStatus(true);
+        YELLOW2.changeMortgageStatus(true);
+        YELLOW3.changeMortgageStatus(false);
+        assertTrue(YELLOW1.isMortgaged());
+        assertTrue(YELLOW2.isMortgaged());
+        assertFalse(YELLOW3.isMortgaged());
+
+        // Case 3: Mortgage a property that is in a full set.
+        BROWN1.changeMortgageStatus(true);
+        BROWN2.changeMortgageStatus(false);
+        assertTrue(BROWN1.isMortgaged());
+        assertFalse(BROWN2.isMortgaged());
+
+        // Case 4: Unmortgage a property that is in a full set.
+        BROWN1.changeMortgageStatus(false);
+        BROWN2.changeMortgageStatus(false);
+        assertFalse(BROWN1.isMortgaged());
+        assertFalse(BROWN2.isMortgaged());
+
+        String errMsg = "";
+        // Case 5: Try to mortgage a property that has buildings on it.
+        BROWN1.correctSetStatus();
+        BROWN1.updateBuildings(true);
+        try {
+            BROWN1.changeMortgageStatus(true);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Buildings exist on a property of this type.", errMsg);
+        errMsg = "";
+
+        // Case 6: Try to mortgage a property where buildings are on a property of that type.
+        try {
+            BROWN2.changeMortgageStatus(true);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Buildings exist on a property of this type.", errMsg);
+    }
 }
