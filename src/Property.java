@@ -59,11 +59,14 @@ public abstract class Property {
     /** The initial cost to buy this property. */
     protected double cost;
 
-    /** Array of rents possible for the. */
+    /** Array of rents possible for the property. */
     protected double[] rentList;
 
     /** Current rent for landing on this property. */
     protected double rent;
+
+    /** Determines if this property's owner has a full set. */
+    protected boolean inFullSet;
 
     /** Returns the number of properties in this set that the owner of this property has. */
     private int totalOwnedSet() {
@@ -79,30 +82,36 @@ public abstract class Property {
         return total;
     }
 
+    // TODO: Think about moving this only to ColorProperty, since other properties don't need to check full sets.
     /** Returns whether or not the owner of this property also owns all the other properties of its set. */
-    private boolean checkOwnFullSet() {
+    protected boolean checkOwnFullSet() {
         if (totalOwnedSet() == TYPESETS.get(type).size()) {
             return true;
         }
         return false;
     }
 
-    /** Update the current rent information for this property if necessary after ownership changes. */
-    public abstract void updateOwnerRent();
+    /** Returns whether or not the set status of this property was correct and then corrects it if needed. */
+    protected abstract boolean correctSetStatus();
 
-    /** Change the ownership of the property to NEWOWNER, removing any current owner. */
+    /** Update the current rent information for this property after ownership changes. If CHECKED is false,
+     *  double check that the set status is correct first. */
+    public abstract void updateOwnerRent(boolean checked);
+
+    /** Change the ownership of the property to NEWOWNER, removing any current owner. Updates rents accordingly */
     public void changeOwnership(Player newOwner) {
         if (owned) {
             owner.removePropertyList(this);
-        }
-        if (newOwner == null) {
             owned = false;
-        } else {
+        }
+        if (newOwner != null) {
             newOwner.addPropertyList(this);
             owned = true;
         }
         owner = newOwner;
-        updateOwnerRent();
+        if (!correctSetStatus()) {
+            updateOwnerRent(true);
+        }
     }
 
     /** Changes the mortgage status based on WANTMORTGAGED. Returns true if a change was made. */
@@ -130,6 +139,11 @@ public abstract class Property {
     /** Returns the owner of this property. */
     public Player getOwner() {
         return owner;
+    }
+
+    /** Returns the current rent of this property. */
+    public double getRent() {
+        return rent;
     }
 
     /** Sets the owner. Using mostly for testing purposes. */

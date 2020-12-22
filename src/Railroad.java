@@ -1,6 +1,11 @@
 public class Railroad extends Property {
     @Override
-    public void updateOwnerRent() {
+    protected boolean correctSetStatus() {
+        return false;
+    }
+
+    @Override
+    public void updateOwnerRent(boolean checked) {
 
     }
 }

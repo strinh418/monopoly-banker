@@ -9,6 +9,9 @@ public class Player {
     /** The properties this player owns. */
     private List<Property> properties;
 
+    /** Total created players. */
+    private static int NUMPLAYERS = 0;
+
     /** Name of this player. */
     private String name;
 
@@ -19,11 +22,12 @@ public class Player {
     private int turn;
 
     /** Initializes a Player with STARTINGMONEY, NAME, and playerID ID. */
-    public Player(double startingMoney, String name, int id) {
+    public Player(double startingMoney, String name) {
         money = startingMoney;
         properties = new ArrayList<>();
         this.name = name;
-        playerID = id;
+        playerID = NUMPLAYERS;
+        NUMPLAYERS += 1;
         turn = 1;
     }
 

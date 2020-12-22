@@ -4,7 +4,12 @@ public class Utility extends Property {
     private int multiplier;
 
     @Override
-    public void updateOwnerRent() {
+    protected boolean correctSetStatus() {
+        return false;
+    }
+
+    @Override
+    public void updateOwnerRent(boolean checked) {
 
     }
 }

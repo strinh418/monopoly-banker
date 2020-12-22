@@ -9,10 +9,6 @@ public class ColorProperty extends Property {
     /** Cost of buying a building on this property. */
     private double buildingCost;
 
-    /** Determines if this property's owner has a full set. */
-    private boolean inFullSet;
-    // TODO: Should I move this into Property abstract class?
-
     /** Create an instance of a ColorProperty. */
     public ColorProperty(String name, typeEnum color, double cost, double mortgageVal,
                          double buildingCost, double[] rentList)
@@ -27,14 +23,43 @@ public class ColorProperty extends Property {
         TYPESETS.get(color).add(this);
     }
 
-    /** Update the current rent information based on the number of buildings and property set ownership. */
-    // Update Cases:
-    // Was a full set and a card in the set was given away, so the rents are no longer doubled
-    // Was not a full set and now every card in the set should be doubled
-    // Was a full set and buildings were added to the property
+    /** Returns whether or not the inFullSet status of this property was correct. Then corrects the status if necessary. */
+    @Override
+    protected boolean correctSetStatus() {
+        boolean prevStatus = inFullSet;
+        inFullSet = checkOwnFullSet();
+        if (prevStatus != inFullSet) {
+            for (Property p : TYPESETS.get(type)) {
+                p.inFullSet = inFullSet;
+            }
+        }
+        return prevStatus == inFullSet;
+    }
+
+    /** Update the current rent information based on the number of buildings and property set ownership. If CHECKED is
+     *  false, checks the set status first. */
     // TODO: Current rules are that buildings cannot be bought unless a full set is owned
     @Override
-    public void updateOwnerRent() {
+    public void updateOwnerRent(boolean checked) {
+        if (!checked) {
+            correctSetStatus();
+        }
+        int multiplier = 1;
+        if (inFullSet) {
+            multiplier = 2;
+        }
+        for (Property p : TYPESETS.get(type)) {
+            p.rent = p.rentList[0] * multiplier;
+        }
+    }
 
+    @Override
+    public boolean changeMortgageStatus(boolean wantMortgaged) {
+        return false;
+    }
+
+    /** Returns whether or not this property has a full set. */
+    public boolean getInFullSet() {
+        return inFullSet;
     }
 }
