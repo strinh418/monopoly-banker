@@ -1,7 +1,9 @@
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 public class ColorPropertyTests {
     public static ColorProperty RED1;
@@ -23,8 +25,12 @@ public class ColorPropertyTests {
     public static Player P1;
     public static Player P2;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
+        /** Clear the property sets before initializing. */
+        for (Set s : Property.TYPESETS.values()) {
+            s.clear();
+        }
         /** Players being tested with. */
         P1 = new Player(5, "player1");
         P2 = new Player(5, "player2");
@@ -189,8 +195,9 @@ public class ColorPropertyTests {
         assertTrue(BLUE2.correctSetStatus());
         assertFalse(BLUE2.getInFullSet());
         assertTrue(BLUE3.correctSetStatus());
+
         assertFalse(BROWN1.correctSetStatus());
-        assertFalse(BROWN2.correctSetStatus());
+        assertTrue(BROWN2.correctSetStatus());
     }
 
     @Test

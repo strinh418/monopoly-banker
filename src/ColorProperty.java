@@ -3,6 +3,9 @@ public class ColorProperty extends Property {
     /** Cost of buying a building on this property. */
     private double buildingCost;
 
+    /** Determines if this property's owner has a full set. */
+    private boolean inFullSet;
+
     /** Create an instance of a ColorProperty. */
     public ColorProperty(String name, typeEnum color, double cost, double mortgageVal,
                          double buildingCost, double[] rentList) {
@@ -23,7 +26,7 @@ public class ColorProperty extends Property {
         inFullSet = checkOwnFullSet();
         if (prevStatus != inFullSet) {
             for (Property p : TYPESETS.get(type)) {
-                p.inFullSet = inFullSet;
+                ((ColorProperty) p).inFullSet = inFullSet;
             }
         }
         return prevStatus == inFullSet;
