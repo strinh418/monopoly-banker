@@ -121,6 +121,9 @@ public abstract class Property {
 
     /** Changes the mortgage status based on WANTMORTGAGED. Returns true if a change was made. */
     public boolean changeMortgageStatus(boolean wantMortgaged) {
+        if (!owned) {
+            throw new OwnershipException("Property is not owned.");
+        }
         if (wantMortgaged && !mortgaged) {
             mortgaged = true;
             return true;

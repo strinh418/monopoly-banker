@@ -431,5 +431,14 @@ public class ColorPropertyTests {
             errMsg = e.getMessage();
         }
         assertEquals("Buildings exist on a property of this type.", errMsg);
+        errMsg = "";
+
+        // Case 7: Try to mortgage a property that is unowned.
+        try {
+            RED1.changeMortgageStatus(true);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Property is not owned.", errMsg);
     }
 }

@@ -1,5 +1,4 @@
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
@@ -18,10 +17,10 @@ public class RailroadTests {
     public void setUp() {
         P1 = new Player(5, "player1");
         P2 = new Player(5, "player2");
-        RLRD1 = new Railroad("Reading", 1, 1, new double[] {.25, .5, 1, 2});
-        RLRD2 = new Railroad("Short", 1, 1, new double[] {.25, .5, 1, 2});
-        RLRD3 = new Railroad("Pennsylvania", 1, 1, new double[] {.25, .5, 1, 2});
-        RLRD4 = new Railroad("B&O", 1, 1, new double[] {.25, .5, 1, 2});
+        RLRD1 = new Railroad("Reading", 1, 1, new double[] {0, .25, .5, 1, 2});
+        RLRD2 = new Railroad("Short", 1, 1, new double[] {0, .25, .5, 1, 2});
+        RLRD3 = new Railroad("Pennsylvania", 1, 1, new double[] {0, .25, .5, 1, 2});
+        RLRD4 = new Railroad("B&O", 1, 1, new double[] {0, .25, .5, 1, 2});
     }
 
     @Test
@@ -120,7 +119,7 @@ public class RailroadTests {
         RLRD3.setOwner(P2);
         assertTrue(RLRD1.correctSetStatus());
         assertTrue(RLRD2.correctSetStatus());
-        assertFalse(RLRD3.correctSetStatus());
+        assertTrue(RLRD3.correctSetStatus());
         assertTrue(RLRD4.correctSetStatus());
         assertEquals(2, RLRD1.getRailroadsOwned());
         assertEquals(2, RLRD2.getRailroadsOwned());
@@ -141,12 +140,179 @@ public class RailroadTests {
         P2.addPropertyList(RLRD4);
         RLRD4.setOwner(P2);
         assertTrue(RLRD1.correctSetStatus());
-        assertFalse(RLRD2.correctSetStatus());
+        assertTrue(RLRD2.correctSetStatus());
         assertTrue(RLRD3.correctSetStatus());
         assertTrue(RLRD4.correctSetStatus());
         assertEquals(1, RLRD1.getRailroadsOwned());
         assertEquals(3, RLRD2.getRailroadsOwned());
         assertEquals(3, RLRD3.getRailroadsOwned());
         assertEquals(3, RLRD4.getRailroadsOwned());
+    }
+
+    @Test
+    public void testUpdateOwnerRent() {
+        assertEquals(0, RLRD1.getRent(), 0);
+        assertEquals(0, RLRD2.getRent(), 0);
+        assertEquals(0, RLRD3.getRent(), 0);
+        assertEquals(0, RLRD4.getRent(), 0);
+
+        P1.addPropertyList(RLRD1);
+        RLRD1.setOwner(P1);
+        RLRD1.updateOwnerRent(false);
+        assertEquals(.25, RLRD1.getRent(), 0);
+        assertEquals(0, RLRD2.getRent(), 0);
+        assertEquals(0, RLRD3.getRent(), 0);
+        assertEquals(0, RLRD4.getRent(), 0);
+
+        P1.addPropertyList(RLRD2);
+        RLRD2.setOwner(P1);
+        RLRD2.updateOwnerRent(false);
+        assertEquals(.5, RLRD1.getRent(), 0);
+        assertEquals(.5, RLRD2.getRent(), 0);
+        assertEquals(0, RLRD3.getRent(), 0);
+        assertEquals(0, RLRD4.getRent(), 0);
+
+        P2.addPropertyList(RLRD3);
+        RLRD3.setOwner(P2);
+        RLRD3.updateOwnerRent(false);
+        assertEquals(.5, RLRD1.getRent(), 0);
+        assertEquals(.5, RLRD2.getRent(), 0);
+        assertEquals(.25, RLRD3.getRent(), 0);
+        assertEquals(0, RLRD4.getRent(), 0);
+
+        P1.removePropertyList(RLRD2);
+        RLRD2.setOwner(null);
+        P2.addPropertyList(RLRD2);
+        RLRD2.setOwner(P2);
+        RLRD2.updateOwnerRent(false);
+        assertEquals(.25, RLRD1.getRent(), 0);
+        assertEquals(.5, RLRD2.getRent(), 0);
+        assertEquals(.5, RLRD3.getRent(), 0);
+        assertEquals(0, RLRD4.getRent(), 0);
+
+        P2.addPropertyList(RLRD4);
+        RLRD4.setOwner(P2);
+        RLRD4.updateOwnerRent(false);
+        assertEquals(.25, RLRD1.getRent(), 0);
+        assertEquals(1, RLRD2.getRent(), 0);
+        assertEquals(1, RLRD3.getRent(), 0);
+        assertEquals(1, RLRD4.getRent(), 0);
+    }
+
+    @Test
+    public void testChangeOwnership() {
+        // Case 1: Unowned to owned, changing one property status
+        RLRD1.changeOwnership(P1);
+        assertEquals(P1, RLRD1.getOwner());
+        assertNull(RLRD2.getOwner());
+        assertNull(RLRD3.getOwner());
+        assertNull(RLRD4.getOwner());
+        assertEquals(1, RLRD1.getRailroadsOwned());
+        assertEquals(0, RLRD2.getRailroadsOwned());
+        assertEquals(0, RLRD3.getRailroadsOwned());
+        assertEquals(0, RLRD4.getRailroadsOwned());
+
+        // Case 2: Owned to different owner, not changing property status
+        RLRD1.changeOwnership(P2);
+        assertEquals(P2, RLRD1.getOwner());
+        assertNull(RLRD2.getOwner());
+        assertNull(RLRD3.getOwner());
+        assertNull(RLRD4.getOwner());
+        assertEquals(1, RLRD1.getRailroadsOwned());
+        assertEquals(0, RLRD2.getRailroadsOwned());
+        assertEquals(0, RLRD3.getRailroadsOwned());
+        assertEquals(0, RLRD4.getRailroadsOwned());
+
+        // Case 3: Unowned to owned, not changing first property's status
+        RLRD2.changeOwnership(P1);
+        assertEquals(P2, RLRD1.getOwner());
+        assertEquals(P1, RLRD2.getOwner());
+        assertNull(RLRD3.getOwner());
+        assertNull(RLRD4.getOwner());
+        assertEquals(1, RLRD1.getRailroadsOwned());
+        assertEquals(1, RLRD2.getRailroadsOwned());
+        assertEquals(0, RLRD3.getRailroadsOwned());
+        assertEquals(0, RLRD4.getRailroadsOwned());
+
+        // Case 4: Unowned to owned, changing first property's status
+        RLRD3.changeOwnership(P1);
+        assertEquals(P2, RLRD1.getOwner());
+        assertEquals(P1, RLRD2.getOwner());
+        assertEquals(P1, RLRD3.getOwner());
+        assertNull(RLRD4.getOwner());
+        assertEquals(1, RLRD1.getRailroadsOwned());
+        assertEquals(2, RLRD2.getRailroadsOwned());
+        assertEquals(2, RLRD3.getRailroadsOwned());
+        assertEquals(0, RLRD4.getRailroadsOwned());
+
+        // Case 4: Owned to different owner, changing property status of two
+        RLRD2.changeOwnership(P2);
+        assertEquals(P2, RLRD1.getOwner());
+        assertEquals(P2, RLRD2.getOwner());
+        assertEquals(P1, RLRD3.getOwner());
+        assertNull(RLRD4.getOwner());
+        assertEquals(2, RLRD1.getRailroadsOwned());
+        assertEquals(2, RLRD2.getRailroadsOwned());
+        assertEquals(1, RLRD3.getRailroadsOwned());
+        assertEquals(0, RLRD4.getRailroadsOwned());
+
+        // Case 5: Owned to unowned, not affecting other properties
+        RLRD3.changeOwnership(null);
+        assertEquals(P2, RLRD1.getOwner());
+        assertEquals(P2, RLRD2.getOwner());
+        assertNull(RLRD3.getOwner());
+        assertNull(RLRD4.getOwner());
+        assertEquals(2, RLRD1.getRailroadsOwned());
+        assertEquals(2, RLRD2.getRailroadsOwned());
+        assertEquals(0, RLRD3.getRailroadsOwned());
+        assertEquals(0, RLRD4.getRailroadsOwned());
+
+        // Case 6: Owned to unowned, affecting other properties
+        RLRD1.changeOwnership(null);
+        assertNull(RLRD1.getOwner());
+        assertEquals(P2, RLRD2.getOwner());
+        assertNull(RLRD3.getOwner());
+        assertNull(RLRD4.getOwner());
+        assertEquals(0, RLRD1.getRailroadsOwned());
+        assertEquals(1, RLRD2.getRailroadsOwned());
+        assertEquals(0, RLRD3.getRailroadsOwned());
+        assertEquals(0, RLRD4.getRailroadsOwned());
+    }
+
+    @Test
+    public void testUpdateBuildings() {
+        String errMsg = "";
+        try {
+            RLRD1.updateBuildings(true);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Buildings cannot be bought on this Property type.", errMsg);
+        errMsg = "";
+        try {
+            RLRD2.updateBuildings(false);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Buildings cannot be bought on this Property type.", errMsg);
+    }
+
+    @Test
+    public void testChangeMortgageStatus() {
+        String errMsg = "";
+        try {
+            RLRD1.changeMortgageStatus(false);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Property is not owned.", errMsg);
+        P1.addPropertyList(RLRD1);
+        RLRD1.setOwner(P1);
+        assertFalse(RLRD1.changeMortgageStatus(false));
+        assertFalse(RLRD1.isMortgaged());
+        assertTrue(RLRD1.changeMortgageStatus(true));
+        assertTrue(RLRD1.isMortgaged());
+        assertFalse(RLRD1.changeMortgageStatus(true));
+        assertTrue(RLRD1.isMortgaged());
     }
 }

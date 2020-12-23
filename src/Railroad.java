@@ -26,22 +26,28 @@ public class Railroad extends Property {
     @Override
     protected boolean correctSetStatus() {
         boolean correct = correctRailroadsOwned();
-        if (!correct) {
-            for (Property p : TYPESETS.get(type)) {
-                ((Railroad) p).correctRailroadsOwned();
-            }
+        for (Property p : TYPESETS.get(type)) {
+            ((Railroad) p).correctRailroadsOwned();
         }
         return correct;
     }
 
+    // TODO: Just checks every railroad right now. Update so only required railroads are checked?
+    /** Updates the rent if necessary. If CHECKED, assumes that correctSetStatus was called prior and a change is needed.
+     *  If not CHECKED, will call correctSetStatus() first and only update rent if incorrect status. */
     @Override
     public void updateOwnerRent(boolean checked) {
-
+        if (!checked) {
+            correctSetStatus();
+        }
+        for (Property p : TYPESETS.get(typeEnum.RAILROAD)) {
+            p.rent = p.rentList[((Railroad) p).railroadsOwned];
+        }
     }
 
     @Override
     public void updateBuildings(boolean add) {
-
+        throw new PropertyException("Buildings cannot be bought on this Property type.");
     }
 
     /** Returns the number of railroads owned by this property owner. */
