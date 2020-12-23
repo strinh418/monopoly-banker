@@ -65,15 +65,12 @@ public abstract class Property {
     /** Current rent for landing on this property. */
     protected double rent;
 
-    /** Determines if this property's owner has a full set. */
-    protected boolean inFullSet;
-
     // TODO: Should I move this into ColorProperty class?
     /** The number of buildings existing on this property. */
     protected int numBuildings;
 
     /** Returns the number of properties in this set that the owner of this property has. */
-    private int totalOwnedSet() {
+    protected int totalOwnedSet() {
         if (owner == null) {
             return 0;
         }

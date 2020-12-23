@@ -14,20 +14,24 @@ public class Railroad extends Property {
         TYPESETS.get(typeEnum.RAILROAD).add(this);
     }
 
-    /** Returns whether or not the railroadsOwned status of this property was correct. Then corrects the status if necessary. */
-    // TODO: Need to fix this to properly
-    @Override
-    protected boolean correctSetStatus() {
+    /** Corrects the railroadsOwned status of this property only. Returns true if a change was made, and false otherwise. */
+    private boolean correctRailroadsOwned() {
         int prevStatus = railroadsOwned;
         railroadsOwned = totalOwnedSet();
-        if (prevStatus != railroadsOwned) {
+        return prevStatus == railroadsOwned;
+    }
+
+    // TODO: More efficient way of determining which Railroads need to be updated and checked?
+    /** Returns whether or not the railroadsOwned status of this property was correct. Then corrects the status if necessary. */
+    @Override
+    protected boolean correctSetStatus() {
+        boolean correct = correctRailroadsOwned();
+        if (!correct) {
             for (Property p : TYPESETS.get(type)) {
-                if (p.owner.equals(owner)) {
-                    ((Railroad) p).railroadsOwned = railroadsOwned;
-                }
+                ((Railroad) p).correctRailroadsOwned();
             }
         }
-        return prevStatus == railroadsOwned;
+        return correct;
     }
 
     @Override
