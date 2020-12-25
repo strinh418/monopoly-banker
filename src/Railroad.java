@@ -1,8 +1,12 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Railroad extends Property {
 
     /** The number of railroads this property owner has. */
     private int railroadsOwned;
 
+    // TODO: Make this private after fixing the tests.
     /** Create an instance of a Railroad. */
     public Railroad(String name, double cost, double mortgageVal, double[] rentList) {
         this.name = name;
@@ -12,6 +16,21 @@ public class Railroad extends Property {
         this.rent = rentList[0];
         this.rentList = rentList;
         TYPESETS.get(typeEnum.RAILROAD).add(this);
+    }
+
+    // TODO: Figure out if I do or don't want 0 to be the first number in rentList
+    // TODO: Write tests to make sure this works.
+    /** Creates all the Railroads for a game. */
+    public static List<Railroad> createProperties(String[] names, double cost, double mortgageVal, double[] rentList) {
+        TYPESETS.get(typeEnum.RAILROAD).clear();
+        List<Railroad> properties = new ArrayList<>();
+        if (names.length + 1 != rentList.length) {
+            throw new PropertyException("Improper arguments provided to create these ColorProperties.");
+        }
+        for (String name : names) {
+            properties.add(new Railroad(name, cost, mortgageVal, rentList));
+        }
+        return properties;
     }
 
     /** Corrects the railroadsOwned status of this property only. Returns true if a change was made, and false otherwise. */

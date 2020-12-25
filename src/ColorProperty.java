@@ -1,11 +1,15 @@
-public class ColorProperty extends Property {
+import java.util.ArrayList;
+import java.util.List;
 
+public class ColorProperty extends Property {
+    // TODO: Generalize the max number of buildings that can exist on a ColorProperty. For now, only allows 5.
     /** Cost of buying a building on this property. */
     private double buildingCost;
 
     /** Determines if this property's owner has a full set. */
     private boolean inFullSet;
 
+    // TODO: Change this constructor to private after fixing the tests.
     /** Create an instance of a ColorProperty. */
     public ColorProperty(String name, typeEnum color, double cost, double mortgageVal,
                          double buildingCost, double[] rentList) {
@@ -17,6 +21,26 @@ public class ColorProperty extends Property {
         this.buildingCost = buildingCost;
         this.rentList = rentList;
         TYPESETS.get(color).add(this);
+    }
+
+    // TODO: Update tests to ensure this constructor works.
+    /** Creates all the ColorProperties of a given color. */
+    public static List<ColorProperty> createProperties(typeEnum color, String[] names, double[] costs, double[] mortgages,
+                                                double buildingCost, double[][] rentLists) {
+        TYPESETS.get(color).clear();
+        List<ColorProperty> properties = new ArrayList<>();
+        if (names.length != costs.length || names.length != mortgages.length) {
+            throw new PropertyException("Improper arguments provided to create these ColorProperties.");
+        }
+        for (double[] list : rentLists) {
+            if (list.length != 6) {
+                throw new PropertyException("Improper arguments provided to create these ColorProperties.");
+            }
+        }
+        for (int i = 0; i < names.length; i += 1) {
+            properties.add(new ColorProperty(names[i], color, costs[i], mortgages[i], buildingCost, rentLists[i]));
+        }
+        return properties;
     }
 
     /** Returns whether or not the inFullSet status of this property was correct. Then corrects the status if necessary. */

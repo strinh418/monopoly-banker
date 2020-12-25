@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class Property {
-
+    // TODO: Need to fix constructor and rent lists for # of properties of a given type
     /** Enum representing different types of properties. */
     public enum typeEnum {
         RED,
@@ -159,7 +159,7 @@ public abstract class Property {
         return rent;
     }
 
-    /** Returns the number of buildings on this proeprty. */
+    /** Returns the number of buildings on this property. */
     public int getNumBuildings() {
         return numBuildings;
     }
