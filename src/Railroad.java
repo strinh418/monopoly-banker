@@ -46,6 +46,7 @@ public class Railroad extends Property {
     }
 
     // TODO: More efficient way of determining which Railroads need to be updated and checked?
+    // TODO: To ensure that changeOwnership always works, will always return false for now, but want to improve this.
     /** Returns whether or not the railroadsOwned status of this property was correct. Then corrects the status if necessary. */
     @Override
     protected boolean correctSetStatus() {
@@ -53,7 +54,8 @@ public class Railroad extends Property {
         for (Property p : TYPESETS.get(type)) {
             ((Railroad) p).correctRailroadsOwned();
         }
-        return correct;
+        // return correct;
+        return false;
     }
 
     // TODO: Just checks every railroad right now. Update so only required railroads are checked?

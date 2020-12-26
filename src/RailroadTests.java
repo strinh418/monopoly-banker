@@ -100,52 +100,41 @@ public class RailroadTests {
         assertEquals(0, RLRD4.getRailroadsOwned());
         P1.addPropertyList(RLRD1);
         RLRD1.setOwner(P1);
-        assertFalse(RLRD1.correctSetStatus());
-        assertTrue(RLRD2.correctSetStatus());
-        assertTrue(RLRD3.correctSetStatus());
-        assertTrue(RLRD4.correctSetStatus());
+        RLRD1.correctSetStatus();
         assertEquals(1, RLRD1.getRailroadsOwned());
         assertEquals(0, RLRD2.getRailroadsOwned());
         assertEquals(0, RLRD3.getRailroadsOwned());
         assertEquals(0, RLRD4.getRailroadsOwned());
+
         P1.addPropertyList(RLRD2);
         RLRD2.setOwner(P1);
-        assertFalse(RLRD1.correctSetStatus());
-        assertTrue(RLRD2.correctSetStatus());
-        assertTrue(RLRD3.correctSetStatus());
-        assertTrue(RLRD4.correctSetStatus());
+        RLRD2.correctSetStatus();
         assertEquals(2, RLRD1.getRailroadsOwned());
         assertEquals(2, RLRD2.getRailroadsOwned());
         assertEquals(0, RLRD3.getRailroadsOwned());
         assertEquals(0, RLRD4.getRailroadsOwned());
+
         P2.addPropertyList(RLRD3);
         RLRD3.setOwner(P2);
-        assertTrue(RLRD1.correctSetStatus());
-        assertTrue(RLRD2.correctSetStatus());
-        assertTrue(RLRD3.correctSetStatus());
-        assertTrue(RLRD4.correctSetStatus());
+        RLRD3.correctSetStatus();
         assertEquals(2, RLRD1.getRailroadsOwned());
         assertEquals(2, RLRD2.getRailroadsOwned());
         assertEquals(1, RLRD3.getRailroadsOwned());
         assertEquals(0, RLRD4.getRailroadsOwned());
+
         P1.removePropertyList(RLRD2);
         RLRD2.setOwner(null);
         P2.addPropertyList(RLRD2);
         RLRD2.setOwner(P2);
-        assertFalse(RLRD1.correctSetStatus());
-        assertTrue(RLRD2.correctSetStatus());
-        assertTrue(RLRD3.correctSetStatus());
-        assertTrue(RLRD4.correctSetStatus());
+        RLRD2.correctSetStatus();
         assertEquals(1, RLRD1.getRailroadsOwned());
         assertEquals(2, RLRD2.getRailroadsOwned());
         assertEquals(2, RLRD3.getRailroadsOwned());
         assertEquals(0, RLRD4.getRailroadsOwned());
+
         P2.addPropertyList(RLRD4);
         RLRD4.setOwner(P2);
-        assertTrue(RLRD1.correctSetStatus());
-        assertTrue(RLRD2.correctSetStatus());
-        assertTrue(RLRD3.correctSetStatus());
-        assertTrue(RLRD4.correctSetStatus());
+        RLRD4.correctSetStatus();
         assertEquals(1, RLRD1.getRailroadsOwned());
         assertEquals(3, RLRD2.getRailroadsOwned());
         assertEquals(3, RLRD3.getRailroadsOwned());
@@ -202,6 +191,7 @@ public class RailroadTests {
         assertEquals(1, RLRD4.getRent(), 0);
     }
 
+    // TODO: Double check that changeOwnership also correctly updates rent
     @Test
     public void testChangeOwnership() {
         // Case 1: Unowned to owned, changing one property status
@@ -255,6 +245,7 @@ public class RailroadTests {
         assertEquals(P1, RLRD3.getOwner());
         assertNull(RLRD4.getOwner());
         assertEquals(2, RLRD1.getRailroadsOwned());
+        assertEquals(.5, RLRD1.getRent(), 0);
         assertEquals(2, RLRD2.getRailroadsOwned());
         assertEquals(1, RLRD3.getRailroadsOwned());
         assertEquals(0, RLRD4.getRailroadsOwned());
