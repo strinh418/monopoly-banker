@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class ColorProperty extends Property {
@@ -27,7 +28,11 @@ public class ColorProperty extends Property {
     public static ColorProperty[] createProperties(String color, String[] names, double[] costs, double[] mortgages,
                                                 double buildingCost, double[][] rentLists) {
         color = color.toLowerCase();
-        TYPESETS.get(color).clear();
+        if (TYPESETS.containsKey(color)) {
+            TYPESETS.get(color).clear();
+        } else {
+            TYPESETS.put(color, new HashSet<>());
+        }
         ColorProperty[] properties = new ColorProperty[names.length];
         if (names.length != costs.length || names.length != mortgages.length) {
             throw new PropertyException("Improper arguments provided to create these ColorProperties.");
@@ -38,7 +43,7 @@ public class ColorProperty extends Property {
             }
         }
         for (int i = 0; i < names.length; i += 1) {
-            properties[i] = new ColorProperty(names[i], color, costs[i], mortgages[i], buildingCost, rentLists[i]);
+            properties[i] = new ColorProperty(names[i].toLowerCase(), color, costs[i], mortgages[i], buildingCost, rentLists[i]);
         }
         return properties;
     }

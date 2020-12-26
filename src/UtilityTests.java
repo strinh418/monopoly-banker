@@ -16,16 +16,16 @@ public class UtilityTests {
     public void setUp() {
         P1 = new Player(5, "player1");
         P2 = new Player(5, "player2");
-        List<Utility> utilityList = Utility.createProperties(new String[] {"utility1", "utility2"}, 2,
+        Utility[] utilityList = Utility.createProperties(new String[] {"utility1", "utility2"}, 2,
                 1, new double[] {0, 4, 10});
-        UTILITY1 = utilityList.get(0);
-        UTILITY2 = utilityList.get(1);
+        UTILITY1 = utilityList[0];
+        UTILITY2 = utilityList[1];
     }
 
     @Test
     public void testSetUp() {
         // TODO: Test multiplier and multiplier list
-        assertEquals(2, Property.TYPESETS.get(Property.typeEnum.UTILITY).size());
+        assertEquals(2, Property.TYPESETS.get("utility").size());
         assertFalse(UTILITY1.isOwned());
         assertFalse(UTILITY2.isOwned());
         assertFalse(UTILITY1.isMortgaged());

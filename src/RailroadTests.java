@@ -17,10 +17,13 @@ public class RailroadTests {
     public void setUp() {
         P1 = new Player(5, "player1");
         P2 = new Player(5, "player2");
-        RLRD1 = new Railroad("Reading", 1, 1, new double[] {0, .25, .5, 1, 2});
-        RLRD2 = new Railroad("Short", 1, 1, new double[] {0, .25, .5, 1, 2});
-        RLRD3 = new Railroad("Pennsylvania", 1, 1, new double[] {0, .25, .5, 1, 2});
-        RLRD4 = new Railroad("B&O", 1, 1, new double[] {0, .25, .5, 1, 2});
+
+        Railroad[] tempArr = Railroad.createProperties(new String[] {"Reading", "Short", "Pennsylvania", "B&O"}, 1,
+                1, new double[] {0, .25, .5, 1, 2});
+        RLRD1 = tempArr[0];
+        RLRD2 = tempArr[1];
+        RLRD3 = tempArr[2];
+        RLRD4 = tempArr[3];
     }
 
     @Test

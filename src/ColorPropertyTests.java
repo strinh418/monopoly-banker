@@ -95,7 +95,7 @@ public class ColorPropertyTests {
                 new double[] {.3, .3}, .5, new double[][] {{.02, .1, .3, .9, 1.6, 2.5},
                         {.04, .2, .6, 1.8, 3.2, 4.5}});
         BROWN1 = tempArr[0];
-        BROWN2 = tempArr[0];
+        BROWN2 = tempArr[1];
         P2.addPropertyList(BROWN1);
         BROWN1.setOwner(P2);
         P2.addPropertyList(BROWN2);
@@ -105,11 +105,11 @@ public class ColorPropertyTests {
     @Test
     public void testTypeSets() {
         assertEquals(1, Property.TYPESETS.get("red").size());
-        assertEquals(1, Property.TYPESETS.get("Green").size());
-        assertEquals(3, Property.TYPESETS.get("YELLOW").size());
+        assertEquals(1, Property.TYPESETS.get("green").size());
+        assertEquals(3, Property.TYPESETS.get("yellow").size());
         assertEquals(3, Property.TYPESETS.get("purple").size());
-        assertEquals(3, Property.TYPESETS.get("Orange").size());
-        assertEquals(3, Property.TYPESETS.get("bluE").size());
+        assertEquals(3, Property.TYPESETS.get("orange").size());
+        assertEquals(3, Property.TYPESETS.get("blue").size());
         assertEquals(2, Property.TYPESETS.get("brown").size());
     }
 

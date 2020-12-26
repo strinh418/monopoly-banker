@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Railroad extends Property {
@@ -10,25 +11,29 @@ public class Railroad extends Property {
     /** Create an instance of a Railroad. */
     public Railroad(String name, double cost, double mortgageVal, double[] rentList) {
         this.name = name;
-        this.type = typeEnum.RAILROAD;
+        this.type = "railroad";
         this.cost = cost;
         this.mortgageValue = mortgageVal;
         this.rent = rentList[0];
         this.rentList = rentList;
-        TYPESETS.get(typeEnum.RAILROAD).add(this);
+        TYPESETS.get("railroad").add(this);
     }
 
     // TODO: Figure out if I do or don't want 0 to be the first number in rentList
     // TODO: Write tests to make sure this works.
     /** Creates all the Railroads for a game. */
-    public static List<Railroad> createProperties(String[] names, double cost, double mortgageVal, double[] rentList) {
-        TYPESETS.get(typeEnum.RAILROAD).clear();
-        List<Railroad> properties = new ArrayList<>();
+    public static Railroad[] createProperties(String[] names, double cost, double mortgageVal, double[] rentList) {
+        if (TYPESETS.containsKey("railroad")) {
+            TYPESETS.get("railroad").clear();
+        } else {
+            TYPESETS.put("railroad", new HashSet<>());
+        }
+        Railroad[] properties = new Railroad[names.length];
         if (names.length + 1 != rentList.length) {
             throw new PropertyException("Improper arguments provided to create these Railroads.");
         }
-        for (String name : names) {
-            properties.add(new Railroad(name, cost, mortgageVal, rentList));
+        for (int i = 0; i < names.length; i += 1) {
+            properties[i] = new Railroad(names[i].toLowerCase(), cost, mortgageVal, rentList);
         }
         return properties;
     }
@@ -59,7 +64,7 @@ public class Railroad extends Property {
         if (!checked) {
             correctSetStatus();
         }
-        for (Property p : TYPESETS.get(typeEnum.RAILROAD)) {
+        for (Property p : TYPESETS.get("railroad")) {
             p.rent = p.rentList[((Railroad) p).railroadsOwned];
         }
     }
