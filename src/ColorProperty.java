@@ -9,9 +9,8 @@ public class ColorProperty extends Property {
     /** Determines if this property's owner has a full set. */
     private boolean inFullSet;
 
-    // TODO: Change this constructor to private after fixing the tests.
     /** Create an instance of a ColorProperty. */
-    public ColorProperty(String name, typeEnum color, double cost, double mortgageVal,
+    private ColorProperty(String name, String color, double cost, double mortgageVal,
                          double buildingCost, double[] rentList) {
         this.name = name;
         this.type = color;
@@ -25,10 +24,11 @@ public class ColorProperty extends Property {
 
     // TODO: Update tests to ensure this constructor works.
     /** Creates all the ColorProperties of a given color. */
-    public static List<ColorProperty> createProperties(typeEnum color, String[] names, double[] costs, double[] mortgages,
+    public static ColorProperty[] createProperties(String color, String[] names, double[] costs, double[] mortgages,
                                                 double buildingCost, double[][] rentLists) {
+        color = color.toLowerCase();
         TYPESETS.get(color).clear();
-        List<ColorProperty> properties = new ArrayList<>();
+        ColorProperty[] properties = new ColorProperty[names.length];
         if (names.length != costs.length || names.length != mortgages.length) {
             throw new PropertyException("Improper arguments provided to create these ColorProperties.");
         }
@@ -38,7 +38,7 @@ public class ColorProperty extends Property {
             }
         }
         for (int i = 0; i < names.length; i += 1) {
-            properties.add(new ColorProperty(names[i], color, costs[i], mortgages[i], buildingCost, rentLists[i]));
+            properties[i] = new ColorProperty(names[i], color, costs[i], mortgages[i], buildingCost, rentLists[i]);
         }
         return properties;
     }

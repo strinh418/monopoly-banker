@@ -5,38 +5,11 @@ import java.util.Set;
 
 public abstract class Property {
     // TODO: Need to fix constructor and rent lists for # of properties of a given type
-    /** Enum representing different types of properties. */
-    public enum typeEnum {
-        RED,
-        GREEN,
-        YELLOW,
-        ORANGE,
-        PURPLE,
-        LIGHTBLUE,
-        DARKBLUE,
-        BROWN,
-        RAILROAD,
-        UTILITY
-    }
-
     /** Type or color of this property. */
-    protected typeEnum type;
+    protected String type;
 
     /** Sets of the same type or color property. */
-    protected static final Map<typeEnum, Set<Property>> TYPESETS = new HashMap<>() {
-        {
-            put(typeEnum.RED, new HashSet<>());
-            put(typeEnum.GREEN, new HashSet<>());
-            put(typeEnum.YELLOW, new HashSet<>());
-            put(typeEnum.ORANGE, new HashSet<>());
-            put(typeEnum.PURPLE, new HashSet<>());
-            put(typeEnum.LIGHTBLUE, new HashSet<>());
-            put(typeEnum.DARKBLUE, new HashSet<>());
-            put(typeEnum.BROWN, new HashSet<>());
-            put(typeEnum.RAILROAD, new HashSet<>());
-            put(typeEnum.UTILITY, new HashSet<>());
-        }
-    };
+    protected static final Map<String, Set<Property>> TYPESETS = new HashMap<>();
 
     /** The owner of this property. Null if not currently owned. */
     protected Player owner;

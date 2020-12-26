@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 public class ColorPropertyTests {
+    public static final double[] COSTARR1 = new double[] {1};
+    public static final double[] COSTARR3 = new double[] {1, 1, 1};
     public static ColorProperty RED1;
     public static ColorProperty GREEN1;
     public static ColorProperty YELLOW1;
@@ -27,32 +29,28 @@ public class ColorPropertyTests {
 
     @Before
     public void setUp() {
-        /** Clear the property sets before initializing. */
-        for (Set s : Property.TYPESETS.values()) {
-            s.clear();
-        }
-        /** Players being tested with. */
+        ColorProperty[] tempArr;
+        // Players being tested with
         P1 = new Player(5, "player1");
         P2 = new Player(5, "player2");
 
-        /** The following are ColorProperty cases. */
         // Case 1: Single property in a set, unowned.
-        RED1 = new ColorProperty("red1", Property.typeEnum.RED, 1, 1.1,
-                1.5, new double[] {.18, .9, 2.5, 7, 8.75, 10.5});
+        RED1 = ColorProperty.createProperties("red", new String[] {"red1"}, COSTARR1, new double[] {1.1},
+                1.5, new double[][] {{.18, .9, 2.5, 7, 8.75, 10.5}})[0];
 
         // Case 2: Single property in a set, owned.
-        GREEN1 = new ColorProperty("green1", Property.typeEnum.GREEN, 1, 1.5,
-                2, new double[] {.26, 1.3, 3.9, 9, 11, 12.75});
+        GREEN1 = ColorProperty.createProperties("green", new String[] {"green1"}, COSTARR1,
+                new double[] {1.5}, 2, new double[][] {{.26, 1.3, 3.9, 9, 11, 12.75}})[0];
         P1.addPropertyList(GREEN1);
         GREEN1.setOwner(P1);
 
         // Case 3: Multiple properties in a set, all owned by different players.
-        YELLOW1 = new ColorProperty("yellow1", Property.typeEnum.YELLOW, 1, 1.4,
-                1.5, new double[] {.24, 1.2, 3.6, 8.5, 10.25, 12});
-        YELLOW2 = new ColorProperty("yellow2", Property.typeEnum.YELLOW, 1, 1.3,
-                1.5, new double[] {.22, 1.1, 3.3, 8, 9.75, 11.5});
-        YELLOW3 = new ColorProperty("yellow3", Property.typeEnum.YELLOW, 1, 1.3,
-                1.5, new double[] {.22, 1.1, 3.3, 8, 9.75, 11.5});
+        tempArr = ColorProperty.createProperties("yellow", new String[] {"yellow1", "yellow2", "yellow3"},
+                COSTARR3, new double[] {1.4, 1.3, 1.3}, 1.5, new double[][]{{.24, 1.2, 3.6,
+                        8.5, 10.25, 12}, {.22, 1.1, 3.3, 8, 9.75, 11.5}, {.22, 1.1, 3.3, 8, 9.75, 11.5}});
+        YELLOW1 = tempArr[0];
+        YELLOW2 = tempArr[1];
+        YELLOW3 = tempArr[2];
         P1.addPropertyList(YELLOW1);
         YELLOW1.setOwner(P1);
         P1.addPropertyList(YELLOW2);
@@ -61,42 +59,43 @@ public class ColorPropertyTests {
         YELLOW3.setOwner(P2);
 
         // Case 4: Multiple properties in a set, some owned by one player, remaining unowned.
-        PURPLE1 = new ColorProperty("purple1", Property.typeEnum.PURPLE, 1, .7,
-                1, new double[] {.1, .5, 1.5, 4.5, 6.25, 7.5});
-        PURPLE2 = new ColorProperty("purple2", Property.typeEnum.PURPLE, 1, .7,
-                1, new double[] {.1, .5, 1.5, 4.5, 6.25, 7.5});
-        PURPLE3 = new ColorProperty("purple3", Property.typeEnum.PURPLE, 1, .8,
-                1, new double[] {.12, .6, 1.8, 5, 7, 9});
+        tempArr = ColorProperty.createProperties("purple", new String[] {"purple1", "purple2", "purple3"},
+                COSTARR3, new double[] {.7, .7, .8}, 1, new double[][] {{.1, .5, 1.5, 4.5, 6.25, 7.5},
+                        {.1, .5, 1.5, 4.5, 6.25, 7.5}, {.12, .6, 1.8, 5, 7, 9}});
+        PURPLE1 = tempArr[0];
+        PURPLE2 = tempArr[1];
+        PURPLE3 = tempArr[2];
         P1.addPropertyList(PURPLE1);
         PURPLE1.setOwner(P1);
         P1.addPropertyList(PURPLE2);
         PURPLE2.setOwner(P1);
 
         // Case 5: Multiple properties in a set, some owned by different players, remaining unowned.
-        ORANGE1 = new ColorProperty("orange1", Property.typeEnum.ORANGE, 1, .9,
-                1, new double[] {.14, .7, 2, 5.5, 7.5, 9.5});
-        ORANGE2 = new ColorProperty("orange2", Property.typeEnum.ORANGE, 1, .9,
-                1, new double[] {.14, .7, 2, 5.5, 7.5, 9.5});
-        ORANGE3 = new ColorProperty("orange3", Property.typeEnum.ORANGE, 1, 1,
-                1, new double[] {.16, .8, 2.2, 6, 8, 10});
+        tempArr = ColorProperty.createProperties("orange", new String[] {"orange1", "orange2", "orange3"},
+                COSTARR3, new double[] {.9, .9, 1}, 1, new double[][] {{.14, .7, 2, 5.5, 7.5, 9.5},
+                        {.14, .7, 2, 5.5, 7.5, 9.5}, {.16, .8, 2.2, 6, 8, 10}});
+        ORANGE1 = tempArr[0];
+        ORANGE2 = tempArr[1];
+        ORANGE3 = tempArr[2];
         P1.addPropertyList(ORANGE1);
         ORANGE1.setOwner(P1);
         P2.addPropertyList(ORANGE2);
         ORANGE2.setOwner(P2);
 
         // Case 6: Multiple properties in a set, all unowned.
-        BLUE1 = new ColorProperty("blue1", Property.typeEnum.LIGHTBLUE, 1, .5,
-                1, new double[] {.06, .3, .9, 2.7, 4, 5.5});
-        BLUE2 = new ColorProperty("blue2", Property.typeEnum.LIGHTBLUE, 1, .5,
-                1, new double[] {.06, .3, .9, 2.7, 4, 5.5});
-        BLUE3 = new ColorProperty("blue3", Property.typeEnum.LIGHTBLUE, 1, .6,
-                1, new double[] {.08, .4, 1, 3, 4.5, 6});
+        tempArr = ColorProperty.createProperties("blue", new String[] {"blue1", "blue2", "blue3"},
+                COSTARR3, new double[] {.5, .5, .6}, 1, new double[][] {{.06, .3, .9, 2.7, 4, 5.5},
+                        {.06, .3, .9, 2.7, 4, 5.5}, {.08, .4, 1, 3, 4.5, 6}});
+        BLUE1 = tempArr[0];
+        BLUE2 = tempArr[1];
+        BLUE3 = tempArr[2];
 
         // Case 7: Multiple properties all owned by the same player.
-        BROWN1 = new ColorProperty("brown1", Property.typeEnum.BROWN, 1, .3,
-                .5, new double[] {.02, .1, .3, .9, 1.6, 2.5});
-        BROWN2 = new ColorProperty("brown2", Property.typeEnum.BROWN, 1, .3,
-                .5, new double[] {.04, .2, .6, 1.8, 3.2, 4.5});
+        tempArr = ColorProperty.createProperties("brown", new String[] {"brown2", "brown2"}, new double[] {1, 1},
+                new double[] {.3, .3}, .5, new double[][] {{.02, .1, .3, .9, 1.6, 2.5},
+                        {.04, .2, .6, 1.8, 3.2, 4.5}});
+        BROWN1 = tempArr[0];
+        BROWN2 = tempArr[0];
         P2.addPropertyList(BROWN1);
         BROWN1.setOwner(P2);
         P2.addPropertyList(BROWN2);
@@ -105,13 +104,13 @@ public class ColorPropertyTests {
 
     @Test
     public void testTypeSets() {
-        assertEquals(1, Property.TYPESETS.get(Property.typeEnum.RED).size());
-        assertEquals(1, Property.TYPESETS.get(Property.typeEnum.GREEN).size());
-        assertEquals(3, Property.TYPESETS.get(Property.typeEnum.YELLOW).size());
-        assertEquals(3, Property.TYPESETS.get(Property.typeEnum.PURPLE).size());
-        assertEquals(3, Property.TYPESETS.get(Property.typeEnum.ORANGE).size());
-        assertEquals(3, Property.TYPESETS.get(Property.typeEnum.LIGHTBLUE).size());
-        assertEquals(2, Property.TYPESETS.get(Property.typeEnum.BROWN).size());
+        assertEquals(1, Property.TYPESETS.get("red").size());
+        assertEquals(1, Property.TYPESETS.get("Green").size());
+        assertEquals(3, Property.TYPESETS.get("YELLOW").size());
+        assertEquals(3, Property.TYPESETS.get("purple").size());
+        assertEquals(3, Property.TYPESETS.get("Orange").size());
+        assertEquals(3, Property.TYPESETS.get("bluE").size());
+        assertEquals(2, Property.TYPESETS.get("brown").size());
     }
 
     @Test
