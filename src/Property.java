@@ -144,6 +144,11 @@ public abstract class Property {
         return mortgaged;
     }
 
+    /** Returns the mortgageValue of this property. */
+    public double getMortgageValue() {
+        return mortgageValue;
+    }
+
     /** Returns the cost of this property. */
     public double getCost() {
         return cost;

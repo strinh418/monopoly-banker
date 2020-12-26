@@ -13,6 +13,7 @@ public class Utility extends Property {
         this.mortgageValue = mortgageVal;
         this.rentList = multiplierList;
         this.rent = multiplierList[0];
+        TYPESETS.get(typeEnum.UTILITY).add(this);
     }
 
     /** Creates all the Utilities for this game. */
@@ -20,7 +21,7 @@ public class Utility extends Property {
         TYPESETS.get(typeEnum.UTILITY).clear();
         List<Utility> properties = new ArrayList<>();
         if (names.length + 1 != multiplierList.length) {
-            throw new PropertyException("Improper arguments provided to create these ColorProperties.");
+            throw new PropertyException("Improper arguments provided to create these Utilities.");
         }
         for (String name : names) {
             properties.add(new Utility(name, cost, mortgageVal, multiplierList));

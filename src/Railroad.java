@@ -25,7 +25,7 @@ public class Railroad extends Property {
         TYPESETS.get(typeEnum.RAILROAD).clear();
         List<Railroad> properties = new ArrayList<>();
         if (names.length + 1 != rentList.length) {
-            throw new PropertyException("Improper arguments provided to create these ColorProperties.");
+            throw new PropertyException("Improper arguments provided to create these Railroads.");
         }
         for (String name : names) {
             properties.add(new Railroad(name, cost, mortgageVal, rentList));
