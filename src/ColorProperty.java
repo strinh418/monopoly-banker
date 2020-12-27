@@ -3,6 +3,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class ColorProperty extends Property {
+    // TODO: Give more specific exception messages (e.g. when property is already owned, specify who owns it.)
     // TODO: Generalize the max number of buildings that can exist on a ColorProperty. For now, only allows 5.
     /** Cost of buying a building on this property. */
     private double buildingCost;

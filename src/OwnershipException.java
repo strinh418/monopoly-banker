@@ -1,6 +1,6 @@
 public class OwnershipException extends MonopolyException {
     public OwnershipException() {
-        super("The property is already owned by another player.");
+        super("The property is already owned.");
     }
 
     public OwnershipException(String msg) {

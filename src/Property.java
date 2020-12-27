@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class Property {
-    // TODO: Need to fix constructor and rent lists for # of properties of a given type
+
     /** Type or color of this property. */
     protected String type;
 

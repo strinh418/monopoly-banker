@@ -31,12 +31,14 @@ public class Player {
         turn = 1;
     }
 
-    /** Updates the player's money by AMOUNT. Throws an InsufficientFundsException if unable to complete transaction. */
-    public void updateMoney(double amount) {
+    /** Updates the player's money by AMOUNT. Throws an InsufficientFundsException if unable to complete transaction.
+     *  Returns the amount of money this player now has after the transaction. */
+    public double updateMoney(double amount) {
         if (money + amount < 0) {
             throw new InsufficientFundsException();
         }
         money += amount;
+        return money;
     }
 
     /** Pays player OTHER AMOUNT. Throws a MonopolyException if unable to complete the transaction. */
@@ -48,10 +50,8 @@ public class Player {
         other.money += amount;
     }
 
-    /**
-     *  Adds PROPERTY to this player's properties list.
-     *  Throws an OwnershipException if the property is owned by another player.
-     */
+    /** Adds PROPERTY to this player's properties list.
+     * Throws an OwnershipException if the property is owned by another player. */
     public void addPropertyList(Property property) {
         if (property.isOwned()) {
             if (!property.getOwner().equals(this)) {
@@ -61,10 +61,8 @@ public class Player {
             properties.add(property);
         }
     }
-    /**
-     *  Removes PROPERTY from this player's properties list.
-     *  Throws an OwnershipException if the property is not owned by this player.
-     */
+    /** Removes PROPERTY from this player's properties list.
+     *  Throws an OwnershipException if the property is not owned by this player. */
     public void removePropertyList(Property property) {
         if (property.isOwned()) {
             if (!property.getOwner().equals(this)) {
@@ -90,6 +88,21 @@ public class Player {
     /** Returns the player's current turn. */
     public int getTurn() {
         return turn;
+    }
+
+    /** Returns the money this player has. */
+    public double getMoney() {
+        return money;
+    }
+
+    /** Returns the name of this player. */
+    public String getName() {
+        return name;
+    }
+
+    /** Returns the playerID of this player. */
+    public int getPlayerID() {
+        return playerID;
     }
 
 }

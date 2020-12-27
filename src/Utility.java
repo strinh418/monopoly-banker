@@ -4,9 +4,6 @@ import java.util.List;
 
 public class Utility extends Property {
 
-    /** Current multiplier for calculating rent. */
-    //private int multiplier;
-
     /** The number of utilities owned by this property owner. */
     private int utilitiesOwned;
 
@@ -78,8 +75,4 @@ public class Utility extends Property {
     public int getUtilitiesOwned() {
         return utilitiesOwned;
     }
-    /** Returns the multiplier of this property. */
-    /*public int getMultiplier() {
-        return multiplier;
-    }*/
 }
