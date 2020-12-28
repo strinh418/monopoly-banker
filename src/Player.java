@@ -79,10 +79,29 @@ public class Player {
         if (property.isOwned())
         {
             throw new OwnershipException();
-        } else {
-            updateMoney(-1 * property.getCost());
-            property.changeOwnership(this);
         }
+        updateMoney(-1 * property.getCost());
+        property.changeOwnership(this);
+    }
+
+    /** Adds a building on PROPERTY if possible. */
+    public void buyBuilding(Property property) {
+        if (property.getOwner() != this) {
+            throw new OwnershipException("Player does not own this property.");
+        }
+        if (money >= property.getBuildingCost()) {
+            property.updateBuildings(true);
+        }
+        updateMoney(-1 * property.getBuildingCost());
+    }
+
+    /** Sells a building on PROPERTY if possible. */
+    public void sellBuilding(Property property) {
+        if (property.getOwner() != this) {
+            throw new OwnershipException("Player does not own this property.");
+        }
+        property.updateBuildings(false);
+        updateMoney(.5 * property.getBuildingCost());
     }
 
     /** Returns the player's current turn. */

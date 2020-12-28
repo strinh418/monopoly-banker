@@ -42,6 +42,10 @@ public abstract class Property {
     /** The number of buildings existing on this property. */
     protected int numBuildings;
 
+    // TODO: Should I move this into ColorProperty class?
+    /** Cost of buying a building on this property. */
+    protected double buildingCost;
+
     /** Returns the number of properties in this set that the owner of this property has. */
     protected int totalOwnedSet() {
         if (owner == null) {
@@ -140,6 +144,11 @@ public abstract class Property {
     /** Returns the number of buildings on this property. */
     public int getNumBuildings() {
         return numBuildings;
+    }
+
+    /** Returns the building cost of this property. */
+    public double getBuildingCost() {
+        return buildingCost;
     }
 
     /** Sets the owner. Using mostly for testing purposes. */
