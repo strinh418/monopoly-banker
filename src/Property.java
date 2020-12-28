@@ -141,6 +141,11 @@ public abstract class Property {
         return rent;
     }
 
+    /** Returns the name of this property. */
+    public String getName() {
+        return name;
+    }
+
     /** Returns the number of buildings on this property. */
     public int getNumBuildings() {
         return numBuildings;

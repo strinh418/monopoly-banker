@@ -3,6 +3,7 @@ import java.util.List;
 
 public class Player {
 
+    // TODO: More specific exception messages to print in the game.
     /** Amount of money this player owns. */
     private double money;
 
@@ -28,7 +29,6 @@ public class Player {
         this.name = name;
         playerID = NUMPLAYERS;
         NUMPLAYERS += 1;
-        turn = 1;
     }
 
     /** Updates the player's money by AMOUNT. Throws an InsufficientFundsException if unable to complete transaction.
@@ -102,6 +102,20 @@ public class Player {
         }
         property.updateBuildings(false);
         updateMoney(.5 * property.getBuildingCost());
+    }
+
+    // TODO: Deal with paying rent on utilities (having to get the dice roll number)
+    /** Pay rent for landing on PROPERTY. */
+    public void payRent(Property property) {
+        if (property.getOwner() == null || property.getOwner() == this) {
+            throw new OwnershipException("Player does not have to pay rent on this property.");
+        }
+        payPlayer(property.getOwner(), property.getRent());
+    }
+
+    /** Increments the turn of this player and returns the turn. */
+    public void incrementTurn() {
+        turn += 1;
     }
 
     /** Returns the player's current turn. */

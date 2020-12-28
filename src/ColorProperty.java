@@ -23,7 +23,6 @@ public class ColorProperty extends Property {
         TYPESETS.get(color).add(this);
     }
 
-    // TODO: Update tests to ensure this constructor works.
     /** Creates all the ColorProperties of a given color. */
     public static ColorProperty[] createProperties(String color, String[] names, double[] costs, double[] mortgages,
                                                 double buildingCost, double[][] rentLists) {
@@ -46,6 +45,16 @@ public class ColorProperty extends Property {
             properties[i] = new ColorProperty(names[i].toLowerCase(), color, costs[i], mortgages[i], buildingCost, rentLists[i]);
         }
         return properties;
+    }
+
+    /** Creates all the ColorProperties of a given color. Assumes mortgages are half the costs. */
+    public static ColorProperty[] createProperties(String color, String[] names, double[] costs, double buildingCost,
+                                                   double[][] rentLists) {
+        double[] mortgages = new double[costs.length];
+        for (int i = 0; i < costs.length; i += 1) {
+            mortgages[i] = costs[i] / 2;
+        }
+        return createProperties(color, names, costs, mortgages, buildingCost, rentLists);
     }
 
     /** Returns whether or not the inFullSet status of this property was correct. Then corrects the status if necessary. */
@@ -95,6 +104,9 @@ public class ColorProperty extends Property {
         for (Property p : TYPESETS.get(type)) {
             if ((add && numBuildings > p.numBuildings) || (!add && numBuildings < p.numBuildings)) {
                 throw new PropertyException("Houses must be evenly distributed amongst properties.");
+            }
+            if (p.mortgaged) {
+                throw new PropertyException("Property of this type is mortgaged.");
             }
         }
         if (add) {

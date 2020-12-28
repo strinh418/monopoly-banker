@@ -1,0 +1,12 @@
+List of commands. The first word is the name of the command. Everything following are descriptions
+of arguments. All arguments surrounded by [] are optional.
+
+end                     End the current player's turn.
+quit                    Exit the entire game.
+buy property            Current player buys the given property.
+rent property           Current player pays rent on the given property.
+pay amount [player]     Current player pays amount. If player arg given, money given to that player.
+gain amount [player]    Current player gains amount. If player arg given, money given from that player.
+buybuilding property    Current player buys a building on given property.
+sellbuilding property   Current player sells a building on given property.
+?                       This help file.

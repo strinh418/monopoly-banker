@@ -379,6 +379,19 @@ public class ColorPropertyTests {
             errMsg = e.getMessage();
         }
         assertEquals("Houses must be evenly distributed amongst properties.", errMsg);
+        errMsg = "";
+
+        // Case 5: Full set owned but unable to add/subtract building when a proeprty is mortgaged.
+        BROWN2.updateBuildings(false);
+        BROWN1.updateBuildings(false);
+        BROWN2.updateBuildings(false);
+        BROWN2.changeMortgageStatus(true);
+        try {
+            BROWN1.updateBuildings(true);
+        } catch (MonopolyException e) {
+            errMsg = e.getMessage();
+        }
+        assertEquals("Property of this type is mortgaged.", errMsg);
     }
 
     @Test
