@@ -104,13 +104,61 @@ public class Player {
         updateMoney(.5 * property.getBuildingCost());
     }
 
-    // TODO: Deal with paying rent on utilities (having to get the dice roll number)
+    // TODO: Write Tests
+    // TODO: Deal with better way to pay rent on utilities
+    /** Pay rent for landing on PROPERTY. */
+    public void payRent(Utility property, int dice) {
+        if (property.getOwner() == null || property.getOwner() == this) {
+            throw new OwnershipException("Player does not have to pay rent on this property.");
+        }
+        payPlayer(property.getOwner(), property.getRent(dice));
+    }
+
     /** Pay rent for landing on PROPERTY. */
     public void payRent(Property property) {
         if (property.getOwner() == null || property.getOwner() == this) {
             throw new OwnershipException("Player does not have to pay rent on this property.");
         }
         payPlayer(property.getOwner(), property.getRent());
+    }
+
+    // TODO: Write tests for both giveProperty methods.
+    // TODO: Better way than checking that money is >= amount first?
+    // TODO: Deal with case when player is given a mortgaged property.
+    /** Gives PROPERTY to OTHER player for specified AMOUNT. */
+    public void giveProperty(Property property, Player other, double amount) {
+        if (property.getOwner() != this) {
+            throw new OwnershipException("Player does not own this property.");
+        }
+        if (other.getMoney() >= amount) {
+            property.changeOwnership(other);
+        }
+        other.payPlayer(this, amount);
+    }
+
+    // TODO: Write tests + method to unmortgage.
+    /** Mortgages PROPERTY and gains the amount from mortgaging. */
+    public void mortgageProperty(Property property) {
+        if (property.getOwner() != this) {
+            throw new OwnershipException("Player does not own this property.");
+        }
+        if (property.changeMortgageStatus(true)) {
+            updateMoney(property.getMortgageValue());
+            property.turnMortgaged = turn;
+        }
+    }
+
+    /** Calculates money player has at end of game buy selling all buildings and mortgaging all owned properties. */
+    // TODO: Will currently assume that all properties don't have buildings on them. Later update sell building to allow uneven selling of buildings
+    public double calculateWorth() {
+        for (Property p : properties) {
+            mortgageProperty(p);
+        }
+        return money;
+    }
+    /** Gives PROPERTY to OTHER player. */
+    public void giveProperty(Property property, Player other) {
+        giveProperty(property, other, 0);
     }
 
     /** Increments the turn of this player and returns the turn. */
@@ -131,6 +179,15 @@ public class Player {
     /** Returns the name of this player. */
     public String getName() {
         return name;
+    }
+
+    /** Get string representation of all properties. */
+    public String getProperties() {
+        String names = "";
+        for (Property p : properties) {
+            names += p.getName() + " ";
+        }
+        return names;
     }
 
     /** Returns the playerID of this player. */

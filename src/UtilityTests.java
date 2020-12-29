@@ -23,7 +23,6 @@ public class UtilityTests {
 
     @Test
     public void testSetUp() {
-        // TODO: Test multiplier list
         assertEquals(2, Property.TYPESETS.get("utility").size());
         assertFalse(UTILITY1.isOwned());
         assertFalse(UTILITY2.isOwned());

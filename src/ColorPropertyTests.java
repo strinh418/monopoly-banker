@@ -1,9 +1,7 @@
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.lang.reflect.Method;
-import java.util.Set;
 
 public class ColorPropertyTests {
     public static final double[] COSTARR1 = new double[] {1};

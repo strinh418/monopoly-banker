@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,11 +37,16 @@ public abstract class Property {
     /** Current rent for landing on this property. */
     protected double rent;
 
-    // TODO: Should I move this into ColorProperty class?
+    // TODO: code organization improvement
+    //  - priority 1
+    //  - consider moving instance variable into ColorProperty class
+    //  - will have to adjust any instances where numBuildings are used for Railroad and Utilities
     /** The number of buildings existing on this property. */
     protected int numBuildings;
 
-    // TODO: Should I move this into ColorProperty class?
+    // TODO: code organization improvement
+    //  - priority 1
+    //  - consider moving instance variable into ColorProperty class
     /** Cost of buying a building on this property. */
     protected double buildingCost;
 
@@ -60,7 +64,9 @@ public abstract class Property {
         return total;
     }
 
-    // TODO: Think about moving this only to ColorProperty, since other properties don't need to check full sets.
+    // TODO: code organization improvement
+    //  - priority 2
+    //  - consider moving into ColorProperty class since other Property classes do not use this
     /** Returns whether or not the owner of this property also owns all the other properties of its set. */
     protected boolean checkOwnFullSet() {
         if (totalOwnedSet() == TYPESETS.get(type).size()) {
@@ -92,7 +98,15 @@ public abstract class Property {
         }
     }
 
-    // TODO: For updateBuildings and changeMortgageStatus, should I split each method into two?
+    // TODO: code organization improvement
+    //  - priority 2
+    //  - consider splitting the updateBuildings and changeMortgageStatus methods into two individual methods
+
+    // TODO: urgent change
+    //  - priority 5
+    //  - add an additional parameter that determines whether uneven distribution of buildings is allowed
+    //  - will be used to allow selling of all buildings at the end of the game
+    //  - OR create a separate method sellAllBuildings that does not restrict distribution, additional changes in player
     /** Changes buildings status on property, if allowed, based on ADD. */
     public abstract void updateBuildings(boolean add);
 

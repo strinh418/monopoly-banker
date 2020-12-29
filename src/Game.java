@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class Game {
     // TODO: Determine if the right access modifiers are used throughout this class
-    // TODO: Allow the use of M or K when specificying dollar amounts and switch to K when under 1 M.
+    // TODO: Allow the use of M or K when specifying dollar amounts and switch to K when under 1 M.
 
     // TODO: Add help file with commands
     /** Name of help text resource. */
@@ -35,6 +35,12 @@ public class Game {
     /** Sell building string format. */
     private static final String SELL_BUILDING = "%s sold a building on %s for $%s M. Player now has $%s M.";
 
+    /** Give property string format. */
+    private static final String GIVE_PROPERTY = "%s gave %s %s for $%s M. Players now have $%s M and $%s M respectively.";
+
+    /** Player's money string format. */
+    private static final String PLAYER_MONEY = "%s has $%s M.";
+
     /** Determines whether the current game is in session. */
     private boolean playing;
 
@@ -60,6 +66,9 @@ public class Game {
     /** The starting money in this game. */
     private double startingMoney;
 
+    /** Amount gained at pass go. */
+    private double passGo;
+
     /** Specifies whether the next line should prompt with player's name. */
     private boolean nextPrompt;
 
@@ -74,6 +83,7 @@ public class Game {
      */
     public Game() {
         startingMoney = 15;
+        passGo = 2;
         input = new Scanner(System.in);
         welcome();
         setUpPlayers();
@@ -143,110 +153,171 @@ public class Game {
         Matcher command = COMMAND_PATN.matcher(line);
         if (command.matches()) {
             switch (command.group(1).toLowerCase()) {
-            case "?":
-                Main.printResource(HELP_FILE);
-            case "end":
-                turn();
-                nextPrompt = true;
-                break;
-            case "quit":
-                 System.exit(0);
-                 break;
-            case "buy":
-                try {
-                    Property bought = properties.get(command.group(2).toLowerCase());
-                    currPlayer.buyProperty(bought);
-                    System.out.println(String.format(BOUGHT_PROPERTY, bought.getName(), currPlayer.getName(),
-                            currPlayer.getMoney()));
-                } catch (MonopolyException e) {
-                    System.out.println("Unable to buy this property.");
-                } catch (NullPointerException e) {
-                    System.out.println("Property does not exist.");
-                }
-                break;
-            case "rent":
-                try {
-                    Property rented = properties.get(command.group(2).toLowerCase());
-                    currPlayer.payRent(rented);
-                    Player owner = rented.getOwner();
-                    System.out.println(String.format(PAY_PLAYER, currPlayer.getName(), owner.getName(), rented.getRent(),
-                            currPlayer.getMoney(), owner.getMoney()));
-                }  catch (MonopolyException e) {
-                    System.out.println(e.getMessage());
-                    // TODO: Need to deal with exceptions related to insufficient funds here.
-                } catch (NullPointerException e) {
-                    System.out.println("Property does not exist.");
-                }
-                break;
-            case "pay":
-                try {
-                    double amount = Integer.parseInt(command.group(2));
-                    String name = command.group(3);
-                    if (name.equals("")) {
-                        currPlayer.updateMoney(-1 * amount);
-                        System.out.println(String.format(LOST_MONEY, currPlayer.getName(), amount, currPlayer.getMoney()));
-                    } else {
-                        Player other = playerNames.get(name.toLowerCase());
-                        currPlayer.payPlayer(other, amount);
-                        System.out.println(String.format(PAY_PLAYER, currPlayer.getName(), other.getName(), amount,
-                                currPlayer.getMoney(), other.getMoney()));
+                case "?":
+                    Main.printResource(HELP_FILE);
+                case "end":
+                    turn();
+                    nextPrompt = true;
+                    break;
+                case "quit":
+                     System.exit(0);
+                     break;
+                case "buy":
+                    try {
+                        Property bought = properties.get(command.group(2).toLowerCase());
+                        currPlayer.buyProperty(bought);
+                        System.out.println(String.format(BOUGHT_PROPERTY, bought.getName(), currPlayer.getName(),
+                                currPlayer.getMoney()));
+                    } catch (MonopolyException e) {
+                        System.out.println("Unable to buy this property.");
+                    } catch (NullPointerException e) {
+                        System.out.println("Property does not exist.");
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid amount provided for command.");
-                } catch (MonopolyException e) {
-                    System.out.println(e.getMessage());
-                } catch (NullPointerException e) {
-                    System.out.println("Unable to find other player");
-                }
-                break;
-            case "gain":
-                try {
-                    double amount = Integer.parseInt(command.group(2));
-                    String name = command.group(3);
-                    if (name.equals("")) {
-                        currPlayer.updateMoney(amount);
-                        System.out.println(String.format(GAIN_MONEY, currPlayer.getName(), amount, currPlayer.getMoney()));
-                    } else {
-                        Player other = playerNames.get(name.toLowerCase());
-                        other.payPlayer(currPlayer, amount);
-                        System.out.println(String.format(PAY_PLAYER, other.getName(), currPlayer.getName(), amount,
-                                other.getMoney(), currPlayer.getMoney()));
+                    break;
+                case "rent":
+                    // TODO: Better way to deal with utility dice rolls
+                    try {
+                        Property rented = properties.get(command.group(2).toLowerCase());
+                        if (rented.getClass() == Utility.class) {
+                            System.out.println("What dice did you roll?");
+                            int dice = Integer.parseInt(readLine(false));
+                            currPlayer.payRent((Utility)rented, dice);
+                            Player owner = rented.getOwner();
+                            System.out.println(String.format(PAY_PLAYER, currPlayer.getName(), owner.getName(),
+                                    ((Utility)rented).getRent(dice), currPlayer.getMoney(), owner.getMoney()));
+                        } else {
+                            currPlayer.payRent(rented);
+                            Player owner = rented.getOwner();
+                            System.out.println(String.format(PAY_PLAYER, currPlayer.getName(), owner.getName(),
+                                    rented.getRent(), currPlayer.getMoney(), owner.getMoney()));
+                        }
+
+                    }  catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                        // TODO: Need to deal with exceptions related to insufficient funds here.
+                    } catch (NullPointerException e) {
+                        System.out.println("Property does not exist.");
+                    } catch (NumberFormatException e) {
+                        System.out.println("Improper dice roll given.");
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid amount provided for command.");
-                } catch (MonopolyException e) {
-                    System.out.println(e.getMessage());
-                } catch (NullPointerException e) {
-                    System.out.println("Unable to find other player");
-                }
-                break;
-            case "buybuilding":
-                try {
-                    Property buying = properties.get(command.group(2).toLowerCase());
-                    currPlayer.buyBuilding(buying);
-                    System.out.println(String.format(BUY_BUILDING, currPlayer.getName(), buying.getName(),
-                            buying.getBuildingCost(), currPlayer.getMoney()));
-                } catch (NullPointerException e) {
-                    System.out.println("Property does not exist.");
-                } catch (MonopolyException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-            case "sellbuilding":
-                try {
-                    Property selling = properties.get(command.group(2).toLowerCase());
-                    currPlayer.sellBuilding(selling);
-                    System.out.println(String.format(SELL_BUILDING, currPlayer.getName(), selling.getName(),
-                            selling.getBuildingCost() * .5, currPlayer.getMoney()));
-                } catch (NullPointerException e) {
-                    System.out.println("Property does not exist.");
-                } catch (MonopolyException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-            default:
-                 System.out.println("Unknown command. Press ? For a list of commands.");
-                 break;
+                    break;
+                case "pay":
+                    try {
+                        double amount = Double.parseDouble(command.group(2));
+                        String name = command.group(3);
+                        if (name.equals("")) {
+                            currPlayer.updateMoney(-1 * amount);
+                            System.out.println(String.format(LOST_MONEY, currPlayer.getName(), amount, currPlayer.getMoney()));
+                        } else {
+                            Player other = playerNames.get(name.toLowerCase());
+                            currPlayer.payPlayer(other, amount);
+                            System.out.println(String.format(PAY_PLAYER, currPlayer.getName(), other.getName(), amount,
+                                    currPlayer.getMoney(), other.getMoney()));
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid amount provided for command.");
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    } catch (NullPointerException e) {
+                        System.out.println("Unable to find other player");
+                    }
+                    break;
+                case "gain":
+                    try {
+                        double amount = Double.parseDouble(command.group(2));
+                        String name = command.group(3);
+                        if (name.equals("")) {
+                            currPlayer.updateMoney(amount);
+                            System.out.println(String.format(GAIN_MONEY, currPlayer.getName(), amount, currPlayer.getMoney()));
+                        } else {
+                            Player other = playerNames.get(name.toLowerCase());
+                            other.payPlayer(currPlayer, amount);
+                            System.out.println(String.format(PAY_PLAYER, other.getName(), currPlayer.getName(), amount,
+                                    other.getMoney(), currPlayer.getMoney()));
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid amount provided for command.");
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    } catch (NullPointerException e) {
+                        System.out.println("Unable to find other player");
+                    }
+                    break;
+                case "buybuilding":
+                    try {
+                        Property buying = properties.get(command.group(2).toLowerCase());
+                        currPlayer.buyBuilding(buying);
+                        System.out.println(String.format(BUY_BUILDING, currPlayer.getName(), buying.getName(),
+                                buying.getBuildingCost(), currPlayer.getMoney()));
+                    } catch (NullPointerException e) {
+                        System.out.println("Property does not exist.");
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "sellbuilding":
+                    try {
+                        Property selling = properties.get(command.group(2).toLowerCase());
+                        currPlayer.sellBuilding(selling);
+                        System.out.println(String.format(SELL_BUILDING, currPlayer.getName(), selling.getName(),
+                                selling.getBuildingCost() * .5, currPlayer.getMoney()));
+                    } catch (NullPointerException e) {
+                        System.out.println("Property does not exist.");
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "passgo":
+                    try {
+                        currPlayer.updateMoney(passGo);
+                        System.out.println(String.format(PLAYER_MONEY, currPlayer.getName(), currPlayer.getMoney()));
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "give":
+                    try {
+                        Property giving = properties.get(command.group(2).toLowerCase());
+                        Player other = playerNames.get(command.group(3).toLowerCase());
+                        double amount = 0;
+                        if (!command.group(4).equals("")) {
+                            amount = Double.parseDouble(command.group(4).toLowerCase());;
+                        }
+                        if (amount == 0) {
+                            currPlayer.giveProperty(giving, other);
+                        } else {
+                            currPlayer.giveProperty(giving, other, amount);
+                        }
+                        System.out.println(String.format(GIVE_PROPERTY, currPlayer.getName(), other.getName(),
+                                giving.getName(), amount, currPlayer.getMoney(), other.getMoney()));
+
+                    } catch (NullPointerException e) {
+                        System.out.println("Unable to find property or player.");
+                    } catch (NumberFormatException e) {
+                        System.out.println("Improper format provided for money amount.");
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "endgame":
+                    try {
+                        for (Player p : players) {
+                            System.out.println(String.format(PLAYER_MONEY, p.getName(), p.calculateWorth()));
+                        }
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "info":
+                    for (Player p : players) {
+                        System.out.print(String.format(PLAYER_MONEY, p.getName(), p.getMoney()));
+                        System.out.println(" " + p.getProperties());
+                    }
+                    nextPrompt = true;
+                    break;
+                default:
+                     System.out.println("Unknown command. Press ? For a list of commands.");
+                     break;
             }
         }
     }

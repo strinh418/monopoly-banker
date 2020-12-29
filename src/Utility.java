@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 public class Utility extends Property {
 
@@ -18,6 +16,9 @@ public class Utility extends Property {
         TYPESETS.get("utility").add(this);
     }
 
+    // TODO: code improvement
+    //  - priority 2
+    //  - figure out if I do or don't want 0 to be the first number in rentList
     /** Creates all the Utilities for this game. */
     public static Utility[] createProperties(String[] names, double cost, double mortgageVal, double[] multiplierList) {
         if (TYPESETS.containsKey("utility")) {
@@ -42,8 +43,10 @@ public class Utility extends Property {
         return prevStatus == utilitiesOwned;
     }
 
-    // TODO: More efficient way of determining which Utilities need to be updated and checked? Or should this be made static
-    // TODO: To ensure that changeOwnership always works, will always return false for now, but want to improve this.
+    // TODO: code efficiency
+    //  - priority 4
+    //  - more efficient way of determining which Railroads need to be updated and checked? or make static?
+    //  - to ensure that changeOwnership always works, will always return false for now, but want to improve this.
     /** Returns whether or not the utilitiesOwned status of this property was correct. Then corrects the status if necessary. */
     @Override
     protected boolean correctSetStatus() {
@@ -55,7 +58,9 @@ public class Utility extends Property {
         return false;
     }
 
-    // TODO: Possibly implement updateOwnerRent in Property by generalizing utiliteisOwned/railroadsOwned as totalOwned
+    // TODO: generalization
+    //  - priority 2
+    //  - possibly implement updateOwnerRent in Property by generalizing utiliteisOwned/railroadsOwned as totalOwned
     @Override
     public void updateOwnerRent(boolean checked) {
         if (!checked) {
@@ -74,5 +79,13 @@ public class Utility extends Property {
     /** Returns the number of utilities owned. */
     public int getUtilitiesOwned() {
         return utilitiesOwned;
+    }
+
+    // TODO: code improvement
+    //  - priority 3
+    //  - temp solution. figure out better way to ask for dice number than having to create different method like this.
+    /** Returns the rent after asking for the dice number. */
+    public double getRent(int dice) {
+        return rent * dice / 100;
     }
 }

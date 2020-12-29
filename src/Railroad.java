@@ -1,15 +1,12 @@
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 public class Railroad extends Property {
 
     /** The number of railroads this property owner has. */
     private int railroadsOwned;
 
-    // TODO: Make this private after fixing the tests.
     /** Create an instance of a Railroad. */
-    public Railroad(String name, double cost, double mortgageVal, double[] rentList) {
+    private Railroad(String name, double cost, double mortgageVal, double[] rentList) {
         this.name = name;
         this.type = "railroad";
         this.cost = cost;
@@ -19,8 +16,13 @@ public class Railroad extends Property {
         TYPESETS.get("railroad").add(this);
     }
 
-    // TODO: Figure out if I do or don't want 0 to be the first number in rentList
-    // TODO: Write tests to make sure this works.
+    // TODO: code improvement
+    //  - priority 2
+    //  - figure out if I do or don't want 0 to be the first number in rentList
+
+    // TODO: testing
+    //  - priority 3
+    //  - write tests to make sure this works for the setup.
     /** Creates all the Railroads for a game. */
     public static Railroad[] createProperties(String[] names, double cost, double mortgageVal, double[] rentList) {
         if (TYPESETS.containsKey("railroad")) {
@@ -45,8 +47,10 @@ public class Railroad extends Property {
         return prevStatus == railroadsOwned;
     }
 
-    // TODO: More efficient way of determining which Railroads need to be updated and checked?
-    // TODO: To ensure that changeOwnership always works, will always return false for now, but want to improve this.
+    // TODO: code efficiency
+    //  - priority 4
+    //  - more efficient way of determining which Railroads need to be updated and checked?
+    //  - to ensure that changeOwnership always works, will always return false for now, but want to improve this.
     /** Returns whether or not the railroadsOwned status of this property was correct. Then corrects the status if necessary. */
     @Override
     protected boolean correctSetStatus() {
@@ -58,7 +62,9 @@ public class Railroad extends Property {
         return false;
     }
 
-    // TODO: Just checks every railroad right now. Update so only required railroads are checked?
+    // TODO: code efficiency
+    //  - priority 4
+    //  - just checks every railroad right now. update so only required railroads are checked?
     /** Updates the rent if necessary. If CHECKED, assumes that correctSetStatus was called prior and a change is needed.
      *  If not CHECKED, will call correctSetStatus() first and only update rent if incorrect status. */
     @Override

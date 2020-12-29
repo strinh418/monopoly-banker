@@ -3,9 +3,13 @@ import java.util.HashSet;
 import java.util.List;
 
 public class ColorProperty extends Property {
-    // TODO: Give more specific exception messages (e.g. when property is already owned, specify who owns it.)
-    // TODO: Generalize the max number of buildings that can exist on a ColorProperty. For now, only allows 5.
+    // TODO: clarity improvement
+    //  - priority 3
+    //  - give more specific exception messages (e.g. when property is already owned, specify who owns it.)
 
+    // TODO: generalization improvement
+    //  - priority 1
+    //  - generalize the max number of buildings that can exist on a ColorProperty. For now, only allows 5.
 
     /** Determines if this property's owner has a full set. */
     private boolean inFullSet;
@@ -70,7 +74,6 @@ public class ColorProperty extends Property {
         return prevStatus == inFullSet;
     }
 
-    // TODO: Current rules are that buildings cannot be bought unless a full set is owned
     /** Update the current rent information based on the number of buildings and property set ownership. If CHECKED is
      *  false, checks the set status first. */
     @Override
@@ -87,7 +90,26 @@ public class ColorProperty extends Property {
         }
     }
 
-    // TODO: Currently assumes that inFullSet will already be correct and updated before calling. Add check?
+    // TODO: testing
+    //  - priority 4
+    //  - write tests to check that changing ownership doesn't work when there are buildings
+    //  - make sure there are tests for changing ownership of mortgaged properties
+    /** Change the ownership of the property to NEWOWNER, removing any current owner. Updates rents accordingly */
+    @Override
+    public void changeOwnership(Player newPlayer) {
+        if (inFullSet) {
+            for (Property p: TYPESETS.get(type)) {
+                if (p.numBuildings > 0) {
+                    throw new PropertyException("Buildings exist on a property of this type.");
+                }
+            }
+        }
+        super.changeOwnership(newPlayer);
+    }
+
+    // TODO: code improvement
+    //  - priority 3
+    //  - currently assumes that inFullSet will already be correct and updated before calling. Add check?
     /** Adds a building to this property if ADD and if possible. Takes away a building if not ADD and if possible */
     @Override
     public void updateBuildings(boolean add) {

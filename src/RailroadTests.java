@@ -191,7 +191,9 @@ public class RailroadTests {
         assertEquals(1, RLRD4.getRent(), 0);
     }
 
-    // TODO: Double check that changeOwnership also correctly updates rent
+    // TODO: testing
+    //  - priority 4
+    //  - double check that changeOwnership also correctly updates rent
     @Test
     public void testChangeOwnership() {
         // Case 1: Unowned to owned, changing one property status
