@@ -78,6 +78,11 @@ public class Railroad extends Property {
     }
 
     @Override
+    public void updateBuildings(boolean add, int num) {
+        throw new PropertyException("Buildings cannot be bought on this Property type.");
+    }
+
+    @Override
     public void updateBuildings(boolean add) {
         throw new PropertyException("Buildings cannot be bought on this Property type.");
     }

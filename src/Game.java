@@ -41,6 +41,9 @@ public class Game {
     /** Player's money string format. */
     private static final String PLAYER_MONEY = "%s has $%s M.";
 
+    /** Mortgage string format. */
+    private static final String MORTGAGE_PROPERTY = "%s successfully %s %s. Player now has $%s M.";
+
     /** Determines whether the current game is in session. */
     private boolean playing;
 
@@ -155,6 +158,7 @@ public class Game {
             switch (command.group(1).toLowerCase()) {
                 case "?":
                     Main.printResource(HELP_FILE);
+                    break;
                 case "end":
                     turn();
                     nextPrompt = true;
@@ -295,6 +299,30 @@ public class Game {
                         System.out.println("Unable to find property or player.");
                     } catch (NumberFormatException e) {
                         System.out.println("Improper format provided for money amount.");
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "mortgage":
+                    try {
+                        Property mortgaging = properties.get(command.group(2).toLowerCase());
+                        currPlayer.mortgageProperty(mortgaging);
+                        System.out.println(String.format(MORTGAGE_PROPERTY, currPlayer.getName(), "mortgaged",
+                                mortgaging.getName(), currPlayer.getMoney()));
+                    } catch (NullPointerException e) {
+                        System.out.println("Unable to find property or player.");
+                    } catch (MonopolyException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "unmortgage":
+                    try {
+                        Property unmortgage = properties.get(command.group(2).toLowerCase());
+                        currPlayer.unmortgageProperty(unmortgage);
+                        System.out.println(String.format(MORTGAGE_PROPERTY, currPlayer.getName(), "unmortgaged",
+                                unmortgage.getName(), currPlayer.getMoney()));
+                    } catch (NullPointerException e) {
+                        System.out.println("Unable to find property or player.");
                     } catch (MonopolyException e) {
                         System.out.println(e.getMessage());
                     }

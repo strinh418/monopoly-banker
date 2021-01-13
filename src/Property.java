@@ -102,13 +102,11 @@ public abstract class Property {
     //  - priority 2
     //  - consider splitting the updateBuildings and changeMortgageStatus methods into two individual methods
 
-    // TODO: urgent change
-    //  - priority 5
-    //  - add an additional parameter that determines whether uneven distribution of buildings is allowed
-    //  - will be used to allow selling of all buildings at the end of the game
-    //  - OR create a separate method sellAllBuildings that does not restrict distribution, additional changes in player
     /** Changes buildings status on property, if allowed, based on ADD. */
     public abstract void updateBuildings(boolean add);
+
+    /** Adds buildings to property if ADD, else subtracts. Allows uneven distribution if NUM isn't 1. */
+    public abstract void updateBuildings(boolean add, int num);
 
     /** Changes the mortgage status based on WANTMORTGAGED. Returns true if a change was made. */
     public boolean changeMortgageStatus(boolean wantMortgaged) {

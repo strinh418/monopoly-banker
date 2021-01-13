@@ -107,36 +107,43 @@ public class ColorProperty extends Property {
         super.changeOwnership(newPlayer);
     }
 
+    // TODO: testing
+    //  - priority 2
+    //  - write tests for this new updateBuildings method
+    /** Adds building(s) if ADD and if possible, else subtracts. Allows uneven distribution if NUM != 1. */
+    @Override
+    public void updateBuildings(boolean add, int num) {
+        if (!inFullSet) {
+            throw new OwnershipException("Owner does not have the full set.");
+        }
+        int adder = num;
+        if (!add) {
+            adder *= -1;
+        }
+        if (numBuildings + adder > 5 || numBuildings + adder < 0) {
+            throw new PropertyException("Number of buildings must be between 0 and 5.");
+        }
+        if (adder == 1 || adder == -1) {
+            for (Property p : TYPESETS.get(type)) {
+                if ((add && numBuildings > p.numBuildings) || (!add && numBuildings < p.numBuildings)) {
+                    throw new PropertyException("Houses must be evenly distributed amongst properties.");
+                }
+                if (p.mortgaged) {
+                    throw new PropertyException("Property of this type is mortgaged.");
+                }
+            }
+        }
+        numBuildings += adder;
+        rent = rentList[numBuildings];
+    }
+
     // TODO: code improvement
     //  - priority 3
     //  - currently assumes that inFullSet will already be correct and updated before calling. Add check?
     /** Adds a building to this property if ADD and if possible. Takes away a building if not ADD and if possible */
     @Override
     public void updateBuildings(boolean add) {
-        if (!inFullSet) {
-            throw new OwnershipException("Owner does not have the full set.");
-        }
-        int adder = 1;
-        if (!add) {
-            adder = -1;
-        }
-        if (numBuildings + adder > 5 || numBuildings + adder < 0) {
-            throw new PropertyException("Number of buildings must be between 0 and 5.");
-        }
-        for (Property p : TYPESETS.get(type)) {
-            if ((add && numBuildings > p.numBuildings) || (!add && numBuildings < p.numBuildings)) {
-                throw new PropertyException("Houses must be evenly distributed amongst properties.");
-            }
-            if (p.mortgaged) {
-                throw new PropertyException("Property of this type is mortgaged.");
-            }
-        }
-        if (add) {
-            numBuildings += 1;
-        } else {
-            numBuildings -= 1;
-        }
-        rent = rentList[numBuildings];
+        updateBuildings(add, 1);
     }
 
     /** Changes the mortgage status of a ColorProperty based on WANTMORTGAGED. Does not allow mortgaging of a property

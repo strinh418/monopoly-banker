@@ -3,7 +3,9 @@ import java.util.List;
 
 public class Player {
 
-    // TODO: More specific exception messages to print in the game.
+    // TODO: clarity improvement
+    //  - priority 3
+    //  - give more specific exception messages (e.g. when property is already owned, specify who owns it.)
     /** Amount of money this player owns. */
     private double money;
 
@@ -104,8 +106,17 @@ public class Player {
         updateMoney(.5 * property.getBuildingCost());
     }
 
-    // TODO: Write Tests
-    // TODO: Deal with better way to pay rent on utilities
+    // TODO: testing
+    //  priority 2
+    //  write tests for this payRent method for utilities
+
+    // TODO: code efficiency improvement
+    //  priority: 1
+    //  figure out a better way to pay rent on utilities
+
+    // TODO: urgent code change
+    //  priority 5
+    //  player shouldn't have to pay rent if the current property is mortgaged
     /** Pay rent for landing on PROPERTY. */
     public void payRent(Utility property, int dice) {
         if (property.getOwner() == null || property.getOwner() == this) {
@@ -136,7 +147,7 @@ public class Player {
         other.payPlayer(this, amount);
     }
 
-    // TODO: Write tests + method to unmortgage.
+    // TODO: Write tests for mortgageProperty and unmortgageProperty
     /** Mortgages PROPERTY and gains the amount from mortgaging. */
     public void mortgageProperty(Property property) {
         if (property.getOwner() != this) {
@@ -148,9 +159,25 @@ public class Player {
         }
     }
 
+    /** Unmortages PROPERTY and pay the mortgage value plus interest. */
+    public void unmortgageProperty(Property property) {
+        if (property.getOwner() != this) {
+            throw new OwnershipException("Player does not own this property.");
+        }
+        if (property.changeMortgageStatus(false)) {
+            updateMoney(-1 * (property.getMortgageValue() + (.1 * turn - property.turnMortgaged)));
+            property.turnMortgaged = 0;
+        }
+    }
+
     /** Calculates money player has at end of game buy selling all buildings and mortgaging all owned properties. */
     // TODO: Will currently assume that all properties don't have buildings on them. Later update sell building to allow uneven selling of buildings
     public double calculateWorth() {
+        for (Property p : properties) {
+            if (p.getNumBuildings() > 0) {
+                p.updateBuildings(false, p.getNumBuildings());
+            }
+        }
         for (Property p : properties) {
             mortgageProperty(p);
         }
